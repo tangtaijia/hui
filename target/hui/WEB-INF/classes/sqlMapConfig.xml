@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings cacheModelsEnabled="false" enhancementEnabled="false"
+		lazyLoadingEnabled="true" errorTracingEnabled="true"
+		useStatementNamespaces="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" />
+	<sqlMap resource="com/hui/common/entity/mapping/user.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/admin.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysconfig.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysdata.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysmenu.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysrole.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysauth.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysarticle.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/syscache.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysfile.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/syslog.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/systab.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/sysbackup.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/userrole.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/adminrole.xml" />
+	<sqlMap resource="com/hui/common/entity/mapping/fans.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/answer.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/rechargepackage.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/msg.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/question.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/grade.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/subject.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/sysmsg.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/praise.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/help.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/teacherinfo.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/bug.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/province.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/city.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/county.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/gradesubject.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/questionuser.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/beanflow.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/cashflow.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/onlineduration.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/collection.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/commonlogin.xml"/>
+	<sqlMap resource="com/hui/common/entity/mapping/invkeywords.xml"/>
+</sqlMapConfig>

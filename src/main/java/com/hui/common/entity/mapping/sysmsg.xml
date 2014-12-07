@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysmsg">
+	<typeAlias alias="sysmsg" type="com.hui.common.entity.SysMsg" />
+
+	<resultMap class="com.hui.common.entity.SysMsg" id="sysmsgResult">
+		<result property="sysMsgId" column="sysmsg_id" />
+		<result property="sysMsgTitle" column="sysmsg_title" />
+		<result property="sysMsgDesc" column="sysmsg_desc" />
+		<result property="hasImg" column="has_img" />
+		<result property="status" column="status" />
+		<result property="createTime" column="create_time" />
+	</resultMap>
+	
+	<select id="selectById" parameterClass="int" resultMap="sysmsgResult">
+		SELECT
+		*
+		FROM
+		sysmsg
+		WHERE
+		sysmsg_id = #sysMsgId#
+	</select>
+
+	<select id="selectAll" parameterClass="map" resultMap="sysmsgResult">
+		SELECT
+		*
+		FROM
+		sysmsg where status=1
+		order by sysmsg_id desc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+		count(1) from sysmsg where status=1
+	</select>
+	
+	<select id="selectAllE" parameterClass="sysmsg" resultMap="sysmsgResult">
+		SELECT
+		*
+		FROM
+		sysmsg where 1=1
+		<dynamic>
+			<isPropertyAvailable property="sysMsgTitle">
+				<isNotEmpty property="sysMsgTitle" prepend="and">
+					sysmsg_title like CONCAT('%', #sysMsgTitle#, '%')
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="createTimeFrom">
+				<isNotEmpty property="createTimeFrom" prepend="and">
+					create_time &gt;= #createTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="createTimeTo">
+				<isNotEmpty property="createTimeTo" prepend="and">
+					create_time &lt;= #createTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+		order by sysmsg_id desc
+		<dynamic>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCountE" parameterClass="sysmsg" resultClass="int">
+		select
+		count(1) from sysmsg where 1=1
+		<dynamic>
+			<isPropertyAvailable property="sysMsgTitle">
+				<isNotEmpty property="sysMsgTitle" prepend="and">
+					sysmsg_title like CONCAT('%', #sysMsgTitle#, '%')
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="createTimeFrom">
+				<isNotEmpty property="createTimeFrom" prepend="and">
+					create_time &gt;= #createTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="createTimeTo">
+				<isNotEmpty property="createTimeTo" prepend="and">
+					create_time &lt;= #createTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="sysmsg">
+		<selectKey resultClass="int" keyProperty="sysMsgId">
+			select
+			ifnull(max(sysmsg_id),0)
+			+ 1
+			as sysMsgId
+			from sysmsg 
+    	</selectKey>
+		INSERT INTO sysmsg
+		(
+		sysmsg_id,
+		sysmsg_title,
+		sysmsg_desc,
+		has_img,
+		status,
+		create_time
+		)
+		VALUES
+		(
+		#sysMsgId#,
+		#sysMsgTitle#,
+		#sysMsgDesc#,
+		#hasImg#,
+		#status#,
+		#createTime#
+		)
+	</insert>
+	
+	<update id="update" parameterClass="sysmsg">
+		update sysmsg set sysmsg_id=#sysMsgId#
+		<isNotEmpty prepend="," property="sysMsgTitle">
+			sysmsg_title =
+			#sysMsgTitle#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="sysMsgDesc">
+			sysmsg_desc =
+			#sysMsgDesc#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="hasImg">
+			has_img =
+			#hasImg#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="status">
+			status =
+			#status#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="createTime">
+			create_time =
+			#createTime#
+		</isNotEmpty>
+		where
+		sysmsg_id=#sysMsgId#
+	</update>
+
+</sqlMap>

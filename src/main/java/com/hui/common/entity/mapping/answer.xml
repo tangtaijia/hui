@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="answer">
+	<typeAlias alias="answer" type="com.hui.common.entity.Answer" />
+	<typeAlias alias="answerView" type="com.hui.common.webservice.EntityView.AnswerEntityView"/>
+
+	<resultMap class="com.hui.common.entity.Answer" id="answerResult">
+		<result property="aId" column="a_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="questionId" column="question_id" />
+		<result property="answerDesc" column="answer_desc" />
+		<result property="praiseNum" column="praise_num" />
+		<result property="clientStyle" column="client_style" />
+		<result property="createTime" column="create_time" />
+		<result property="hasImg" column="has_img" />
+		<result property="isFavorate" column="is_favorate" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="answerResult">
+		SELECT
+		*
+		FROM
+		answer
+		WHERE
+		a_id = #id#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="answerResult">
+		SELECT
+		a.*
+		FROM
+		answer a left join user u on a.hui_no = u.hui_no
+		WHERE 1=1 AND a.status=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotNull property="huiNo" prepend="and">
+					a.hui_no = #huiNo#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="questionId">
+				<isNotNull property="questionId" prepend="and">
+					a.question_id = #questionId#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="isFavorate">
+				<isNotNull property="isFavorate" prepend="and">
+					a.is_favorate = #isFavorate#
+				</isNotNull>
+			</isPropertyAvailable>
+			order by u.is_teacher desc
+			<isNull property="huiNo" >
+				,a.is_favorate desc,a.a_id asc
+			</isNull>
+			<isPropertyAvailable property="huiNo">
+				<isNotNull property="huiNo" >
+					,a.a_id desc
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			answer
+		WHERE 1=1 AND status=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotNull property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="questionId">
+				<isNotNull property="questionId" prepend="and">
+					question_id = #questionId#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="isFavorate">
+				<isNotNull property="isFavorate" prepend="and">
+					is_favorate = #isFavorate#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="queryRecentAnswerStatusInfo" parameterClass="map" resultClass="answerView">
+		select a.answer_desc as answerDescription,c.grade_name as gradeText,d.sub_name as courseText,a.has_img as hasImage,a.create_time as timeTick,a.question_id as questionId
+ 		from answer a,question b,grade c,subject d where a.question_id = b.q_id and b.grade_id=c.grade_id and b.subject_id=d.sub_id
+ 		and a.hui_no=#huidaNo# and a.status = 1 order by a.a_id desc limit 3
+	</select>
+	
+	<update id="update" parameterClass="answer">
+		update answer set a_id=#aId#
+		<isNotNull prepend="," property="huiNo">
+			hui_no =
+			#huiNo#
+		</isNotNull>
+		<isNotNull prepend="," property="questionId">
+			question_id =
+			#questionId#
+		</isNotNull>
+		<isNotNull prepend="," property="answerDesc">
+			answer_desc =
+			#answerDesc#
+		</isNotNull>
+		<isNotNull prepend="," property="praiseNum">
+			praise_num =
+			#praiseNum#
+		</isNotNull>
+		<isNotNull prepend="," property="clientStyle">
+			client_style =
+			#clientStyle#
+		</isNotNull>
+		<isNotNull prepend="," property="createTime">
+			create_time = #createTime#
+		</isNotNull>
+		<isNotNull prepend="," property="hasImg">
+			has_img = #hasImg#
+		</isNotNull>
+		<isNotNull prepend="," property="isFavorate">
+			is_favorate = #isFavorate#
+		</isNotNull>
+		<isNotNull prepend="," property="status">
+			status = #status#
+		</isNotNull>
+		where
+		a_id=#aId#
+	</update>
+
+	<select id="getAnswerListByQuestionIdPaging" parameterClass="map" resultClass="answerView">
+		select a_id as answerNo, a.hui_no as huidaNo,b.nick_name as nickname, answer_desc as answerDescription,
+	    a.create_time as timeTick, has_img as hasImage, is_favorate as isBestAnswer, a.status
+	    from answer a,user b where a.hui_no=b.hui_no and a.status=1 and a.question_id=#questionId#
+	    order by a.is_favorate desc,b.is_teacher desc,a.a_id desc limit #pageSize# offset #offset#
+	</select>
+	
+	<update id="setBestAnswer" parameterClass="map">
+		update answer set is_favorate=1 where question_id=#questionId# and a_id=#answerId#
+	</update>
+	
+	<update id="plusPraise" parameterClass="int">
+		update answer set praise_num=ifnull(praise_num,0)+1 where a_id=#answerId#
+	</update>
+	
+	<update id="minusPraise" parameterClass="int">
+		update answer set praise_num=ifnull(praise_num,0)-1 where a_id=#answerId#
+	</update>
+	
+	<insert id="save" parameterClass="answer">
+		<selectKey resultClass="int" keyProperty="aId">
+			select
+			ifnull(max(a_id),0)
+			+ 1
+			as aId
+			from answer 
+    	</selectKey>
+		INSERT INTO answer
+		(
+		a_id,
+		hui_no,
+		question_id,
+		answer_desc,
+		praise_num,
+		client_style,
+		create_time,
+		has_img,
+		is_favorate,
+		status
+		)
+		VALUES
+		(
+		#aId#,
+		#huiNo#,
+		#questionId#,
+		#answerDesc#,
+		#praiseNum#,
+		#clientStyle#,
+		#createTime#,
+		#hasImg#,
+		#isFavorate#,
+		#status#
+		)
+	</insert>
+	
+	<select id="getMyAnswersPagingList" parameterClass="map" resultClass="answerView">
+		select a.question_id as questionId,c.grade_name as gradeText,d.sub_name as courseText,b.has_img as hasImage,
+		b.create_time as timeTick,b.question_desc as questionDescription,a.answer_desc as answerDescription,a.has_img as answerHasImage
+		,(select count(1) from answer f where f.question_id=b.q_id group by f.question_id) as answers
+ 		from answer a,question b,grade c,subject d where a.question_id = b.q_id and b.grade_id=c.grade_id and b.subject_id=d.sub_id
+ 		and a.hui_no=#huidaNo# and a.status = 1 order by a.a_id desc limit #pageSize# offset #offset#
+	</select>
+	
+	<update id="modifyStatus" parameterClass="java.util.HashMap">
+		update answer set status = #status# where a_id in
+		<iterate property="ids" open="(" close=")" conjunction=",">
+			#ids[]#
+		</iterate>
+	</update>
+
+</sqlMap>

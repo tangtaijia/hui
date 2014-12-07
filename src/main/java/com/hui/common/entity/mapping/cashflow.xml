@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="cashflow">
+	<typeAlias alias="cashflow" type="com.hui.common.entity.CashFlow" />
+
+	<resultMap class="com.hui.common.entity.CashFlow" id="cashflowResult">
+		<result property="cfId" column="cf_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="cfSn" column="cf_sn" />
+		<result property="flowTime" column="flow_time" />
+		<result property="flowAmount" column="flow_amount" />
+		<result property="flowSource" column="flow_source" />
+		<result property="inOut" column="in_out" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<select id="selectById" parameterClass="int" resultMap="cashflowResult">
+		SELECT
+		*
+		FROM
+		cashflow
+		WHERE
+		cf_id = #cfId#
+	</select>
+	
+	<select id="selectAll" parameterClass="cashflow" resultMap="cashflowResult">
+		SELECT
+		*
+		FROM
+		cashflow
+		WHERE status=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="cfSn">
+				<isNotEmpty property="cfSn" prepend="and">
+					cf_sn = #cfSn#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowSource">
+				<isNotEmpty property="flowSource" prepend="and">
+					flow_source = #flowSource#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="inOut">
+				<isNotEmpty property="inOut" prepend="and">
+					in_out = #inOut#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeFrom">
+				<isNotEmpty property="flowTimeFrom" prepend="and">
+					flow_time &gt;= #flowTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeTo">
+				<isNotEmpty property="flowTimeTo" prepend="and">
+					flow_time &lt;= #flowTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="start">
+				<isNotEmpty property="start">
+					limit #start#,#size#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="cashflow" resultClass="int">
+		select
+			count(1) 
+		FROM
+			cashflow
+		WHERE status=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="cfSn">
+				<isNotEmpty property="cfSn" prepend="and">
+					cf_sn = #cfSn#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowSource">
+				<isNotEmpty property="flowSource" prepend="and">
+					flow_source = #flowSource#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="inOut">
+				<isNotEmpty property="inOut" prepend="and">
+					in_out = #inOut#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeFrom">
+				<isNotEmpty property="flowTimeFrom" prepend="and">
+					flow_time &gt;= #flowTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeTo">
+				<isNotEmpty property="flowTimeTo" prepend="and">
+					flow_time &lt;= #flowTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="cashflow">
+		<selectKey resultClass="int" keyProperty="cfId">
+			select
+			ifnull(max(cf_id),0)
+			+ 1
+			as cfId
+			from cashflow 
+    	</selectKey>
+		INSERT INTO cashflow
+		(
+		cf_id,
+		hui_no,
+		cf_sn,
+		flow_time,
+		flow_amount,
+		flow_source,
+		in_out,
+		status
+		)
+		VALUES
+		(
+		#cfId#,
+		#huiNo#,
+		#cfSn#,
+		#flowTime#,
+		#flowAmount#,
+		#flowSource#,
+		#inOut#,
+		#status#
+		)
+	</insert>
+
+</sqlMap>

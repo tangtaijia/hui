@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="questionuser">
+	<typeAlias alias="questionuser" type="com.hui.common.entity.QuestionUser" />
+
+	<resultMap class="com.hui.common.entity.QuestionUser" id="questionuserResult">
+		<result property="quId" column="qu_id" />
+		<result property="questionId" column="question_id" />
+		<result property="huiNo" column="hui_no" />
+	</resultMap>
+	
+	<insert id="save" parameterClass="questionuser">
+		<selectKey resultClass="int" keyProperty="quId">
+			select
+			ifnull(max(qu_id),0) + 1
+			as quId
+			from questionuser 
+    	</selectKey>
+		INSERT INTO questionuser
+		(
+		qu_id,
+		question_id,
+		hui_no
+		)
+		VALUES
+		(
+		#quId#,
+		#questionId#,
+		#huiNo#
+		)
+	</insert>
+	
+	<select id="selectAll" parameterClass="map" resultMap="questionuserResult">
+		SELECT
+			*
+		FROM
+			questionuser where 1=1
+			<dynamic>
+				<isPropertyAvailable property="huiNo">
+					<isNotNull property="huiNo" prepend="and">
+						hui_no = #huiNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="qId">
+					<isNotNull property="qId" prepend="and">
+						question_id = #qId#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<delete id="delete" parameterClass="int">
+		delete from questionuser where qu_id = #quId#
+	</delete>
+	
+</sqlMap>

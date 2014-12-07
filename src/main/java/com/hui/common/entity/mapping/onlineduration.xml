@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="onlineduration">
+	<typeAlias alias="onlineduration" type="com.hui.common.entity.OnlineDuration" />
+
+	<resultMap class="com.hui.common.entity.OnlineDuration" id="onlinedurationResult">
+		<result property="odId" column="od_id" />
+		<result property="teacherId" column="teacher_id" />
+		<result property="beginTime" column="begin_time" />
+		<result property="endTime" column="end_time" />
+	</resultMap>
+	
+	<insert id="save" parameterClass="onlineduration">
+		<selectKey resultClass="int" keyProperty="odId">
+			select
+			ifnull(max(od_id),0)
+			+ 1
+			as odId
+			from onlineduration 
+    	</selectKey>
+		INSERT INTO onlineduration
+		(
+		od_id,
+		teacher_id,
+		begin_time,
+		end_time
+		)
+		VALUES
+		(
+		#odId#,
+		#teacherId#,
+		#beginTime#,
+		null
+		)
+	</insert>
+	
+	<update id="update" parameterClass="onlineduration">
+		update onlineduration set teacher_id =#teacherId#
+		<isNotNull prepend="," property="beginTime">
+			begin_time =
+			#beginTime#
+		</isNotNull>
+		<isNotNull prepend="," property="endTime">
+			end_time =
+			#endTime#
+		</isNotNull>
+		where
+		teacher_id =#teacherId#  and begin_time = #beginTime#
+	</update>
+	
+	<select id="getRecentOnlineTime" parameterClass="int" resultClass="int">
+		SELECT
+			max(begin_time) begin_time
+		FROM
+			onlineduration
+		WHERE
+		teacher_id = #teacherId#
+	</select>
+	
+	<select id="countOnlineTime" parameterClass="int" resultClass="int">
+		SELECT
+			SUM(end_time) - SUM(begin_time) AS online_time
+		FROM
+			onlineduration
+		WHERE
+			teacher_id = #teacherId#
+		AND end_time IS NOT NULL
+	</select>
+	
+	<select id="checkOnline" parameterClass="int" resultClass="int">
+		SELECT
+			COUNT(1)
+		FROM
+			`onlineduration`
+		WHERE
+			end_time IS NULL
+		AND teacher_id = #teacherId#
+	</select>
+
+</sqlMap>

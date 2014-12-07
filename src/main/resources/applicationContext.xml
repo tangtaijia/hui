@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<context:component-scan
+		base-package="com.hui.common.interceptor,com.hui.front,com.hui.common.service,com.hui.common.webservice,com.hui.common.action.mobileaction"></context:component-scan>
+	<task:annotation-driven />
+
+	<!--propertyConfig -->
+	<bean id="propertyConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/resources/database.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- dataSource -->
+	<bean id="dataSource" class="com.hui.common.utils.DatasourceProcessor"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="validationQuery" value="select 1" />
+		<property name="initialSize" value="5" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="3" />
+		<property name="maxActive" value="30" />
+		<property name="maxWait" value="20000" />
+		<property name="testOnReturn" value="true" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="10" />
+	</bean>
+
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="methodInterceptor" class="com.hui.common.interceptor.MethodInterceptor"></bean>
+
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<aop:config>
+		<aop:pointcut id="servicelog"
+			expression="(execution(* com.hui.common.service.impl.*.saveEntity(..)) and args(param)) || (execution(* com.hui.common.service.impl.*.updateEntity(..)) and args(param))" />
+		<aop:aspect ref="methodInterceptor">
+			<aop:before pointcut-ref="servicelog" method="before"
+				arg-names="param" />
+		</aop:aspect>
+	</aop:config>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+</beans>

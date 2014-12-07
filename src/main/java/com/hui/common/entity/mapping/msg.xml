@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="msg">
+	<typeAlias alias="msg" type="com.hui.common.entity.Msg" />
+
+	<resultMap class="com.hui.common.entity.Msg" id="msgResult">
+		<result property="msgId" column="msg_id" />
+		<result property="msgInfoId" column="msginfo_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="msgType" column="msg_type" />
+		<result property="msgContent" column="msg_content"/>
+		<result property="createTime" column="create_time" />
+		<result property="isRead" column="is_read" />
+	</resultMap>
+	
+	<select id="getMessageCountByType" parameterClass="map" resultClass="int">
+		select count(*) from msg where 1=1
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgType">
+					<isNotNull property="msgType" prepend="and">
+						msg_type = #msgType#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isRead">
+					<isNotNull property="isRead" prepend="and">
+						is_read = #isRead#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<select id="getAll" parameterClass="map" resultMap="msgResult">
+		select * from msg where 1=1
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgType">
+					<isNotNull property="msgType" prepend="and">
+						msg_type = #msgType#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgInfoId">
+					<isNotNull property="msgInfoId" prepend="and">
+						msginfo_id = #msgInfoId#
+					</isNotNull>
+				</isPropertyAvailable>
+				order by msg_id desc
+				<isPropertyAvailable property="start">
+					<isNotNull property="start">
+						limit #start#,#size#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select count(1) from msg where 1=1
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgType">
+					<isNotNull property="msgType" prepend="and">
+						msg_type = #msgType#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgInfoId">
+					<isNotNull property="msgInfoId" prepend="and">
+						msginfo_id = #msgInfoId#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isRead">
+					<isNotNull property="isRead" prepend="and">
+						is_read = #isRead#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<select id="getMessagesByType" parameterClass="map" resultMap="msgResult">
+		select * from msg where 1=1
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgType">
+					<isNotNull property="msgType" prepend="and">
+						msg_type = #msgType#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<select id="getMessagesPagingByType" parameterClass="map" resultMap="msgResult">
+		select * from msg where 1=1
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="msgType">
+					<isNotNull property="msgType" prepend="and">
+						msg_type = #msgType#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isRead">
+					<isNotNull property="isRead" prepend="and">
+						is_read = #isRead#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+			order by msg_id desc limit #pageSize# offset #offset#
+	</select>
+	
+	<update id="setMessageRead" parameterClass="map">
+		update msg set is_read=1 where msg_id=#messageId# and hui_no=#huidaNo#
+	</update>
+	
+	<update id="setMessageReadByCondition" parameterClass="map">
+		update msg set is_read=1 where msginfo_id=#msgInfoId# and hui_no=#huidaNo# and msg_type=#msgType#
+	</update>
+	
+	<insert id="save" parameterClass="msg">
+		<selectKey resultClass="int" keyProperty="msgId">
+			select
+			ifnull(max(msg_id),0)
+			+ 1
+			as msgId
+			from msg 
+    	</selectKey>
+		INSERT INTO msg
+		(
+		msg_id,
+		msginfo_id,
+		hui_no,
+		msg_type,
+		msg_content,
+		create_time,
+		is_read
+		)
+		VALUES
+		(
+		#msgId#,
+		#msgInfoId#,
+		#huiNo#,
+		#msgType#,
+		#msgContent#,
+		#createTime#,
+		#isRead#
+		)
+	</insert>
+	
+	<delete id="deleteByTypeAndInfoId" parameterClass="map">
+		delete from msg where msginfo_id = #msgInfoId# and msg_type= #msgType#
+	</delete>
+	
+	<delete id="delete" parameterClass="int">
+		delete from msg where msg_id = #msgId#
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="beanflow">
+	<typeAlias alias="beanflow" type="com.hui.common.entity.BeanFlow" />
+
+	<resultMap class="com.hui.common.entity.BeanFlow" id="beanflowResult">
+		<result property="bfId" column="bf_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="bfSn" column="bf_sn" />
+		<result property="flowTime" column="flow_time" />
+		<result property="beanNum" column="bean_num" />
+		<result property="leftBeanNum" column="left_bean_num" />
+		<result property="inOut" column="in_out" />
+		<result property="type" column="type" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<select id="selectById" parameterClass="int" resultMap="beanflowResult">
+		SELECT
+		*
+		FROM
+		beanflow
+		WHERE
+		bf_id = #bfId#
+	</select>
+	
+	<select id="selectAll" parameterClass="beanflow" resultMap="beanflowResult">
+		SELECT
+		*
+		FROM
+		beanflow
+		WHERE status=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="bfSn">
+				<isNotEmpty property="bfSn" prepend="and">
+					bf_sn = #bfSn#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="inOut">
+				<isNotEmpty property="inOut" prepend="and">
+					in_out = #inOut#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeFrom">
+				<isNotEmpty property="flowTimeFrom" prepend="and">
+					flow_time &gt;= #flowTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeTo">
+				<isNotEmpty property="flowTimeTo" prepend="and">
+					flow_time &lt;= #flowTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="type">
+				<isNotEmpty property="type" prepend="and">
+					type = #type#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			order by bf_id desc
+			<isPropertyAvailable property="start">
+				<isNotEmpty property="start">
+					limit #start#,#size#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="beanflow" resultClass="int">
+		select
+			count(1) 
+		FROM
+			beanflow
+		WHERE status=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="bfSn">
+				<isNotEmpty property="bfSn" prepend="and">
+					bf_sn = #bfSn#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="inOut">
+				<isNotEmpty property="inOut" prepend="and">
+					in_out = #inOut#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="type">
+				<isNotEmpty property="type" prepend="and">
+					type = #type#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeFrom">
+				<isNotEmpty property="flowTimeFrom" prepend="and">
+					flow_time &gt;= #flowTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="flowTimeTo">
+				<isNotEmpty property="flowTimeTo" prepend="and">
+					flow_time &lt;= #flowTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<!-- 获取用户最近一条流水的余额 -->
+	<select id="getLastLeftBeanNum" parameterClass="string" resultClass="int">
+		SELECT
+			b.left_bean_num
+		FROM
+			beanflow b
+		WHERE
+			b.hui_no = #huiNo#
+		ORDER BY
+			b.bf_id DESC LIMIT 1
+	</select>
+	
+	<insert id="save" parameterClass="beanflow">
+		<selectKey resultClass="int" keyProperty="bfId">
+			select
+			ifnull(max(bf_id),0)
+			+ 1
+			as bfId
+			from beanflow 
+    	</selectKey>
+		INSERT INTO beanflow
+		(
+		bf_id,
+		hui_no,
+		bf_sn,
+		flow_time,
+		bean_num,
+		left_bean_num,
+		in_out,
+		type,
+		status
+		)
+		VALUES
+		(
+		#bfId#,
+		#huiNo#,
+		#bfSn#,
+		#flowTime#,
+		#beanNum#,
+		#leftBeanNum#,
+		#inOut#,
+		#type#,
+		#status#
+		)
+	</insert>
+
+</sqlMap>

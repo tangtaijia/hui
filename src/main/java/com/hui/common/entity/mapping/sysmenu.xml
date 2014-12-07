@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysmenu">
+	<typeAlias alias="sysmenu" type="com.hui.common.entity.SysMenu" />
+
+	<resultMap class="com.hui.common.entity.SysMenu" id="sysMenuResult">
+		<result property="menuId" column="menu_id" />
+		<result property="menuCode" column="menu_code" />
+		<result property="menuName" column="menu_name" />
+		<result property="menuType" column="menu_type" />
+		<result property="menuUrl" column="menu_url" />
+		<result property="parentId" column="parent_id" />
+		<result property="detail" column="detail" />
+		<result property="roleType" column="role_type" />
+		<result property="sortOrder" column="sort_order" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysMenuResult">
+		SELECT
+		*
+		FROM
+		sysmenu
+		WHERE
+		menu_id = #id#
+	</select>
+
+	<select id="selectAll" parameterClass="sysmenu" resultMap="sysMenuResult">
+		SELECT
+		*
+		FROM
+		sysmenu
+		WHERE role_type = #roleType#
+		order by parent_id
+		asc,sort_order asc,menu_id asc
+	</select>
+
+	<select id="selectAllMenus" parameterClass="sysmenu" resultMap="sysMenuResult">
+		SELECT
+		*
+		FROM
+		sysmenu
+		where menu_type = 0 and role_type = #roleType#
+		order
+		by parent_id asc,sort_order asc,menu_id asc
+	</select>
+
+	<select id="selectAllOpt" parameterClass="sysmenu" resultMap="sysMenuResult">
+		SELECT
+		*
+		FROM
+		sysmenu
+		where menu_type = 1 and menu_url is not null and
+		role_type = #roleType#
+		order by parent_id asc,sort_order asc,menu_id asc
+	</select>
+
+	<update id="update" parameterClass="sysmenu">
+		update sysmenu set
+		sort_order=#sortOrder#
+		where
+		menu_id=#menuId#
+	</update>
+
+</sqlMap>

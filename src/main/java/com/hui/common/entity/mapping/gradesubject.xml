@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="gradesubject">
+	<typeAlias alias="gradesubject" type="com.hui.common.entity.GradeSubject" />
+	<typeAlias alias="gradeSubjectEntityView" type="com.hui.common.webservice.EntityView.GradeSubjectEntityView" />
+
+	<resultMap class="com.hui.common.entity.GradeSubject" id="gradesubjectResult">
+		<result property="gsId" column="gs_id" />
+		<result property="gradeId" column="grade_id" />
+		<result property="subjectId" column="subject_id" />
+	</resultMap>
+	
+	<select id="getCourseListByGradeId" parameterClass="map" resultClass="gradeSubjectEntityView">
+		select c.sub_id as courseId ,c.sub_name as text from grade a,gradesubject b,subject c where a.grade_id=b.grade_id 
+		and b.subject_id=c.sub_id and a.grade_id=#gradeId#
+	</select>
+
+</sqlMap>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysfile">
+	<typeAlias alias="sysfile" type="com.hui.common.entity.SysFile" />
+
+	<resultMap class="com.hui.common.entity.SysFile" id="sysFileResult">
+		<result property="fileId" column="file_id" />
+		<result property="dataId" column="data_id" />
+		<result property="seqId" column="seq_id" />
+		<result property="fileName" column="file_name" />
+		<result property="filePath" column="file_path" />
+		<result property="fileType" column="file_type" />
+		<result property="pathType" column="path_type" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysFileResult">
+		SELECT
+		*
+		FROM
+		sysfile
+		WHERE
+		file_id = #id#
+	</select>
+	
+	<select id="selectByKey" parameterClass="sysfile" resultMap="sysFileResult">
+		SELECT
+		*
+		FROM
+		sysfile
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="fileType">
+				file_type = #fileType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="dataId">
+				data_id = #dataId#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="seqId">
+				seq_id = #seqId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="selectAll" parameterClass="sysfile" resultMap="sysFileResult">
+		SELECT
+		*
+		FROM
+		sysfile
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="fileType">
+				file_type = #fileType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="dataId">
+				data_id = #dataId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="sysfile" resultClass="int">
+		select
+		count(*) from sysfile
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="fileType">
+				file_type = #fileType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="dataId">
+				data_id = #dataId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="getMaxSeqId" parameterClass="sysfile" resultClass="int">
+		select
+		max(seq_id) from sysfile
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="fileType">
+				file_type = #fileType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="dataId">
+				data_id = #dataId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<insert id="save" parameterClass="sysfile">
+		<selectKey resultClass="int" keyProperty="fileId">
+			select ifnull(max(file_id),0)
+			+ 1
+			as fileId
+			from sysfile 
+    	</selectKey>
+		INSERT INTO sysfile
+		(
+		file_id,
+		data_id,
+		seq_id,
+		file_name,
+		file_path,
+		file_type,
+		path_type
+		)
+		VALUES
+		(
+		#fileId#,
+		#dataId#,
+		#seqId#,
+		#fileName#,
+		#filePath#,
+		#fileType#,
+		#pathType#
+		)
+	</insert>
+	
+	<update id="update" parameterClass="sysfile">
+		update sysfile set file_id=#fileId#
+		<isNotEmpty prepend="," property="dataId">
+			data_id = #dataId#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="seqId">
+			seq_id = #seqId#
+		</isNotEmpty>
+		<!-- 文件名可改空 -->
+		<isNotNull prepend="," property="fileName">
+			file_name = #fileName#
+		</isNotNull>
+		<isNotNull prepend="," property="filePath">
+			file_path = #filePath#
+		</isNotNull>
+		<isNotEmpty prepend="," property="fileType">
+			file_type = #fileType#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="pathType">
+			path_type = #pathType#
+		</isNotEmpty>
+		where
+		file_id=#fileId#
+	</update>
+
+	<delete id="delete" parameterClass="sysfile">
+		delete from sysfile
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="fileId">
+				file_id = #fileId#
+			</isNotNull>
+			<isNotNull prepend="and" property="dataId">
+				data_id = #dataId#
+			</isNotNull>
+			<isNotNull prepend="and" property="fileType">
+				file_type = #fileType#
+			</isNotNull>
+		</dynamic>
+	</delete>
+
+</sqlMap>

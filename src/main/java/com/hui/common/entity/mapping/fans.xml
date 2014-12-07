@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="fans">
+	<typeAlias alias="fans" type="com.hui.common.entity.Fans" />
+
+	<resultMap class="com.hui.common.entity.Fans" id="fansResult">
+		<result property="fansId" column="fans_id" />
+		<result property="fromNo" column="from_no" />
+		<result property="toNo" column="to_no" />
+		<result property="fansTime" column="fans_time" />
+		<result property="nickName" column="nick_name"/>
+	</resultMap>
+	
+	<insert id="addUserFollow" parameterClass="map">
+		<selectKey resultClass="int" keyProperty="fansId">
+			select ifnull(max(fans_id),0) + 1 as fansId from fans 
+    	</selectKey>
+    	insert into fans (fans_id,from_no,to_no,fans_time) values (
+    	#fansId#,#myHuiId#,#otherHuiId#,UNIX_TIMESTAMP())
+	</insert>
+	
+	<delete id="deleteUserFollow" parameterClass="map">
+		delete from fans where from_no=#myHuiId# and to_no = #otherHuiId#
+	</delete>
+	
+	<select id="getFollowList" parameterClass="map" resultMap="fansResult">
+		select a.*,b.nick_name from fans a,user b where a.to_no=#huidaNo#
+		and a.from_no = b.hui_no and b.is_teacher = 0 order by fans_id limit #pagesize# offset #offset#
+	</select>
+	
+	<select id="getFriendsList" parameterClass="map" resultMap="fansResult">
+		select a.*,b.nick_name from fans a,user b where a.from_no=#huidaNo#
+		and a.to_no = b.hui_no and b.is_teacher = 0 order by fans_id limit #pagesize# offset #offset#
+	</select>
+	
+	<select id="searchFriends" parameterClass="map" resultMap="fansResult">
+		select *,'' as nick_name from fans where from_no=#myHuiNo# and to_no=#otherHuiNo# AND NOT EXISTS (SELECT hui_no from teacherinfo t where t.hui_no =to_no or t.hui_no=from_no)
+		union 
+		select *,'' as nick_name from fans where from_no=#otherHuiNo# and to_no=#myHuiNo# AND NOT EXISTS (SELECT hui_no from teacherinfo t where t.hui_no =to_no or t.hui_no=from_no)
+	</select>
+	
+	<select id="searchBullyFriends" parameterClass="map" resultMap="fansResult">
+		select *,'' as nick_name from fans where from_no=#myHuiNo# and to_no=#otherHuiNo# AND NOT EXISTS (SELECT hui_no from teacherinfo t where t.hui_no =to_no or t.hui_no=from_no)
+	</select>
+	
+	<select id="getFollowOrFriendCount" parameterClass="map" resultClass="int">
+		select count(1) from fans 
+			where 1=1 
+			AND NOT EXISTS (SELECT hui_no from teacherinfo t where t.hui_no =to_no or t.hui_no=from_no)
+			<dynamic>
+				<isPropertyAvailable property="toHuiNo">
+					<isNotNull property="toHuiNo" prepend="and">
+						to_no=#toHuiNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="fromHuiNo">
+					<isNotNull property="fromHuiNo" prepend="and">
+						from_no=#fromHuiNo#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+</sqlMap>

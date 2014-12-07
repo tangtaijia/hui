@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysauth">
+	<typeAlias alias="sysauth" type="com.hui.common.entity.SysAuth" />
+
+	<resultMap class="com.hui.common.entity.SysAuth" id="sysAuthResult">
+		<result property="authId" column="auth_id" />
+		<result property="roleId" column="role_id" />
+		<result property="menuId" column="menu_id" />
+	</resultMap>
+
+	<resultMap class="com.hui.common.entity.SysMenu" id="sysMenuResult">
+		<result property="menuId" column="menu_id" />
+		<result property="menuCode" column="menu_code" />
+		<result property="menuName" column="menu_name" />
+		<result property="menuType" column="menu_type" />
+		<result property="menuUrl" column="menu_url" />
+		<result property="parentId" column="parent_id" />
+		<result property="detail" column="detail" />
+		<result property="sortOrder" column="sort_order" />
+	</resultMap>
+
+	<select id="selectAll" parameterClass="sysauth" resultMap="sysAuthResult">
+		SELECT * from sysauth where 1=1
+		<dynamic prepend="and">
+			<isNotNull property="roleId">
+				role_id =
+				#roleId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="selectAllRolesAuth" parameterClass="java.util.HashMap"
+		resultMap="sysMenuResult">
+		select * from sysmenu where menu_id in (SELECT distinct menu_id
+		FROM
+		sysauth where role_id in
+		<iterate property="roleIds" open="(" close=")" conjunction=",">
+			#roleIds[]#
+		</iterate>
+		)
+	</select>
+
+	<delete id="deleteRoleAuth" parameterClass="java.util.HashMap">
+		delete from sysauth where role_id in
+		<iterate property="roleIds" open="(" close=")" conjunction=",">
+			#roleIds[]#
+		</iterate>
+	</delete>
+
+	<insert id="save" parameterClass="sysauth">
+		<selectKey resultClass="int" keyProperty="authId">
+			select ifnull(max(auth_id),0)
+			+
+			1
+			as authId
+			from sysauth 
+    	</selectKey>
+		INSERT INTO sysauth
+		(
+		auth_id,
+		role_id,
+		menu_id
+		)
+		VALUES
+		(
+		#authId#,
+		#roleId#,
+		#menuId#
+		)
+	</insert>
+
+</sqlMap>

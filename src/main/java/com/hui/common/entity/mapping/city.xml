@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="city">
+	<typeAlias alias="city" type="com.hui.common.entity.City" />
+
+	<resultMap class="com.hui.common.entity.City" id="cityResult">
+		<result property="cityId" column="city_id" />
+		<result property="cityName" column="city_name" />
+		<result property="provinceId" column="province_id" />
+	</resultMap>
+	
+	<select id="selectById" parameterClass="int" resultMap="cityResult">
+		SELECT
+		*
+		FROM
+		r_city
+		WHERE
+		city_id = #cityId#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="cityResult">
+		SELECT
+		*
+		FROM
+		r_city where 1=1 
+		<dynamic>
+			<isPropertyAvailable property="provinceId">
+				<isNotNull property="provinceId" prepend="and">
+					province_id = #provinceId#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			r_city where 1=1 
+			<dynamic>
+				<isPropertyAvailable property="provinceId">
+					<isNotNull property="provinceId" prepend="and">
+						province_id = #provinceId#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="city">
+	<!-- 
+		<selectKey resultClass="int" keyProperty="cityId">
+			select
+			max(city_id)
+			+ 1
+			as cityId
+			from r_city 
+    	</selectKey>
+	 -->
+		INSERT INTO r_city
+		(
+		city_id,
+		city_name,
+		province_id
+		)
+		VALUES
+		(
+		#cityId#,
+		#cityName#,
+		#provinceId#
+		)
+	</insert>
+
+</sqlMap>

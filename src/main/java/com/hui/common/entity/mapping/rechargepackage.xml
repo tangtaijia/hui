@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="rechargepackage">
+	<typeAlias alias="rechargepackage" type="com.hui.common.entity.RechargePackage" />
+	<typeAlias alias="rechargeEntityView" type="com.hui.common.webservice.EntityView.RechargeEntityView"/>
+
+	<resultMap class="com.hui.common.entity.RechargePackage" id="rechargepackageResult">
+		<result property="rcpId" column="rcp_id" />
+		<result property="rcpAmount" column="rcp_amount" />
+		<result property="rcpNum" column="rcp_num" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<select id="selectAll" parameterClass="map" resultMap="rechargepackageResult">
+		SELECT
+		*
+		FROM
+		rechargepackage
+		WHERE status=1
+		<dynamic>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			rechargepackage
+		WHERE status=1
+	</select>
+	
+	<select id="getRechargeList" resultClass="rechargeEntityView">
+		select rcp_id as id,rcp_amount as price,rcp_num as huidou from rechargepackage where status=1
+	</select>
+
+</sqlMap>

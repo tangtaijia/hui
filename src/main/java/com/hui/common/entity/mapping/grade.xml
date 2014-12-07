@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="grade">
+	<typeAlias alias="grade" type="com.hui.common.entity.Grade" />
+
+	<resultMap class="com.hui.common.entity.Grade" id="gradeResult">
+		<result property="gradeId" column="grade_id" />
+		<result property="gradeName" column="grade_name" />
+	</resultMap>
+	
+	<select id="selectById" parameterClass="int" resultMap="gradeResult">
+		SELECT
+			g.grade_id,
+			g.grade_name
+		FROM
+			grade g
+		WHERE
+		grade_id = #gradeId#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="gradeResult">
+		SELECT
+			g.grade_id,
+			g.grade_name
+		FROM
+			grade g order by grade_id
+	</select>
+	
+</sqlMap>

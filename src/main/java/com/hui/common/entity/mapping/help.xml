@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="help">
+	<typeAlias alias="help" type="com.hui.common.entity.Help" />
+	<typeAlias alias="helpEntityView" type="com.hui.common.webservice.EntityView.HelpEntityView"/>
+
+	<resultMap class="com.hui.common.entity.Help" id="helpResult">
+		<result property="helpId" column="help_id" />
+		<result property="helpTitle" column="help_title" />
+		<result property="helpDesc" column="help_desc" />
+	</resultMap>
+	
+	<select id="getHelpPagingList" parameterClass="map" resultMap="helpResult">
+		select * from help order by help_id limit #pageSize# offset #offset#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="helpResult">
+		SELECT
+		*
+		FROM
+		help
+		<dynamic>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			help
+	</select>
+	
+	<insert id="save" parameterClass="help">
+		<selectKey resultClass="int" keyProperty="helpId">
+			select
+			ifnull(max(help_id),0)
+			+ 1
+			as helpId
+			from help 
+    	</selectKey>
+		INSERT INTO help
+		(
+		help_id,
+		help_title,
+		help_desc
+		)
+		VALUES
+		(
+		#helpId#,
+		#helpTitle#,
+		#helpDesc#
+		)
+	</insert>
+	
+	<select id="getHelpDetailById" parameterClass="map" resultMap="helpResult">
+		select * from help where help_id=#helpId#
+	</select>
+
+</sqlMap>

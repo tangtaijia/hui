@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="syscache">
+	<typeAlias alias="syscache" type="com.hui.common.entity.SysCache" />
+
+	<resultMap class="com.hui.common.entity.SysCache" id="sysCacheResult">
+		<result property="cacheId" column="cache_id" />
+		<result property="cacheCode" column="cache_code" />
+		<result property="refreshPeriod" column="refresh_period" />
+		<result property="range" column="range" />
+		<result property="notes" column="notes" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysCacheResult">
+		SELECT
+		*
+		FROM
+		syscache
+		WHERE
+		cache_id = #id#
+	</select>
+
+	<select id="selectAll" parameterClass="syscache" resultMap="sysCacheResult">
+		SELECT
+		*
+		FROM
+		syscache
+		order by cache_id asc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="syscache" resultClass="int">
+		select
+		count(*) from syscache
+	</select>
+
+	<update id="update" parameterClass="syscache">
+		<![CDATA[
+		update syscache set refresh_period=#refreshPeriod# where cache_id = #cacheId#
+		]]>
+	</update>
+
+</sqlMap>

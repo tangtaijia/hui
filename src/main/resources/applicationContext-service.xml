@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<bean id="userService" class="com.hui.common.service.impl.UserServiceImpl">
+		<property name="baseDao">
+			<ref bean="userDao" />
+		</property>
+	</bean>
+
+	<bean id="adminService" class="com.hui.common.service.impl.AdminServiceImpl">
+		<property name="baseDao">
+			<ref bean="adminDao" />
+		</property>
+	</bean>
+
+	<bean id="sysConfigService" class="com.hui.common.service.impl.SysConfigServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysConfigDao" />
+		</property>
+	</bean>
+
+	<bean id="sysMenuService" class="com.hui.common.service.impl.SysMenuServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysMenuDao" />
+		</property>
+	</bean>
+
+	<bean id="sysRoleService" class="com.hui.common.service.impl.SysRoleServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysRoleDao" />
+		</property>
+		<property name="sysAuthDao">
+			<ref bean="sysAuthDao" />
+		</property>
+		<property name="adminRoleDao">
+			<ref bean="adminRoleDao" />
+		</property>
+		<property name="userRoleDao">
+			<ref bean="userRoleDao" />
+		</property>
+	</bean>
+
+	<bean id="sysCacheService" class="com.hui.common.service.impl.SysCacheServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysCacheDao" />
+		</property>
+	</bean>
+
+	<bean id="sysFileService" class="com.hui.common.service.impl.SysFileServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysFileDao" />
+		</property>
+	</bean>
+
+	<bean id="sysArticleService" class="com.hui.common.service.impl.SysArticleServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysArticleDao" />
+		</property>
+	</bean>
+
+	<bean id="sysLogService" class="com.hui.common.service.impl.SysLogServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysLogDao" />
+		</property>
+	</bean>
+
+	<bean id="sysTabService" class="com.hui.common.service.impl.SysTabServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysTabDao" />
+		</property>
+	</bean>
+
+	<bean id="sysBackUpService" class="com.hui.common.service.impl.SysBackUpServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysBackUpDao" />
+		</property>
+		<property name="sysTabDao">
+			<ref bean="sysTabDao" />
+		</property>
+	</bean>
+	
+	<bean id="questionServiceImpl" class="com.hui.common.service.impl.QuestionServiceImpl">
+		<property name="baseDao">
+			<ref bean="questionDao" />
+		</property>
+	</bean>
+	<bean id="answerService" class="com.hui.common.service.impl.AnswerServiceImpl">
+		<property name="baseDao">
+			<ref bean="answerDao" />
+		</property>
+	</bean>
+	
+	<bean id="subjectServiceImpl" class="com.hui.common.service.impl.SubjectServiceImpl">
+		<property name="baseDao">
+			<ref bean="subjectDao" />
+		</property>
+	</bean>
+	
+	<bean id="gradeServiceImpl" class="com.hui.common.service.impl.GradeServiceImpl">
+		<property name="baseDao">
+			<ref bean="gradeDao" />
+		</property>
+	</bean>
+	
+	<bean id="invKeywordsService" class="com.hui.common.service.impl.InvKeywordsServiceImpl">
+		<property name="baseDao">
+			<ref bean="invKeywordsDao" />
+		</property>
+	</bean>
+	
+	<bean id="teacherInfoServiceImpl" class="com.hui.common.service.impl.TeacherInfoServiceImpl">
+		<property name="baseDao">
+			<ref bean="teacherInfoDao" />
+		</property>
+	</bean>
+	
+	<bean id="praiseServiceImpl" class="com.hui.common.service.impl.PraiseServiceImpl">
+		<property name="baseDao">
+			<ref bean="praiseDao" />
+		</property>
+	</bean>
+	
+	<bean id="bugServiceImpl" class="com.hui.common.service.impl.BugServiceImpl">
+		<property name="baseDao">
+			<ref bean="bugDao" />
+		</property>
+	</bean>
+	
+	<bean id="rechargeServiceImpl" class="com.hui.common.service.impl.RechargeServiceImpl">
+		<property name="baseDao">
+			<ref bean="rechargeDao" />
+		</property>
+	</bean>
+	
+	<bean id="sysDataService" class="com.hui.common.service.impl.SysDataServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysDataDao" />
+		</property>
+	</bean>
+	
+	<bean id="questionUserService" class="com.hui.common.service.impl.QuestionUserServiceImpl">
+		<property name="baseDao">
+			<ref bean="questionUserDao" />
+		</property>
+	</bean>
+	
+	<bean id="beanFlowService" class="com.hui.common.service.impl.BeanFlowServiceImpl">
+		<property name="baseDao">
+			<ref bean="beanFlowDao" />
+		</property>
+	</bean>
+	
+	<bean id="cashFlowService" class="com.hui.common.service.impl.CashFlowServiceImpl">
+		<property name="baseDao">
+			<ref bean="cashFlowDao" />
+		</property>
+	</bean>
+	
+	<bean id="sysMsgService" class="com.hui.common.service.impl.SysMsgServiceImpl">
+		<property name="baseDao">
+			<ref bean="sysMsgDao" />
+		</property>
+	</bean>
+	
+	<bean id="collectionService" class="com.hui.common.service.impl.CollectionServiceImpl">
+		<property name="baseDao">
+			<ref bean="collectionDao" />
+		</property>
+	</bean>
+
+</beans>

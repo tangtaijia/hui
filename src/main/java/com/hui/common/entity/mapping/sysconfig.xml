@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="syscfg">
+	<typeAlias alias="sysconfig" type="com.hui.common.entity.SysConfig" />
+
+	<resultMap class="com.hui.common.entity.SysConfig" id="sysConfigResult">
+		<result property="configId" column="config_id" />
+		<result property="configCode" column="config_code" />
+		<result property="configValue" column="config_value" />
+		<result property="valueType" column="value_type" />
+		<result property="notes" column="notes" />
+		<result property="detail" column="detail" />
+		<result property="range" column="range" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysConfigResult">
+		SELECT
+		*
+		FROM
+		syscfg
+		WHERE
+		config_id = #id#
+	</select>
+
+	<select id="selectByKey" parameterClass="sysconfig" resultMap="sysConfigResult">
+		SELECT
+		*
+		FROM
+		syscfg
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="configCode">
+				config_code = #configCode#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="selectAll" parameterClass="sysconfig" resultMap="sysConfigResult">
+		SELECT
+		*
+		FROM
+		syscfg
+		order by config_id asc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="sysconfig" resultClass="int">
+		select
+		count(*) from syscfg
+	</select>
+
+	<update id="update" parameterClass="sysconfig">
+		<![CDATA[
+		update syscfg set config_value=#configValue# where config_id=#configId#
+		]]>
+	</update>
+
+</sqlMap>

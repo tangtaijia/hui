@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="praise">
+	<typeAlias alias="praise" type="com.hui.common.entity.Praise" />
+
+	<resultMap class="com.hui.common.entity.Praise" id="praiseResult">
+		<result property="prId" column="pr_id" />
+		<result property="answerId" column="answer_id" />
+		<result property="huiNo" column="hui_no" />
+	</resultMap>
+	
+	<insert id="addPraiseEntity" parameterClass="map">
+		<selectKey resultClass="int" keyProperty="prId">
+			select ifnull(max(pr_id),0) + 1 as prId from praise 
+    	</selectKey>
+    	insert into praise (pr_id,answer_id,hui_no) values (#prId#,#answerId#,#huidaNo#)
+	</insert>
+	
+	<insert id="save" parameterClass="praise">
+		<selectKey resultClass="int" keyProperty="prId">
+			select ifnull(max(pr_id),0) + 1 as prId from praise 
+    	</selectKey>
+    	insert into praise (pr_id,answer_id,hui_no) values (#prId#,#answerId#,#huiNo#)
+	</insert>
+	
+	<delete id="delete" parameterClass="int">
+		DELETE
+		FROM
+			praise
+		WHERE
+			pr_id = #prId#
+	</delete>
+	
+	<delete id="deletePraise" parameterClass="praise">
+		DELETE
+		FROM
+			praise
+		WHERE
+		1=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotNull property="huiNo" prepend="and">
+					hui_no=#huiNo#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="answerId">
+				<isNotNull property="answerId" prepend="and">
+					answer_id=#answerId#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</delete>
+	
+	<select id="queryPraiseCount" parameterClass="map" resultClass="int">
+		select count(1) from praise where 1=1 
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						hui_no=#huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="answerId">
+					<isNotNull property="answerId" prepend="and">
+						answer_id=#answerId#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+
+</sqlMap>

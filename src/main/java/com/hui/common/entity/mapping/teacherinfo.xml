@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="teacherinfo">
+	<typeAlias alias="teacherinfo" type="com.hui.common.entity.TeacherInfo" />
+	<typeAlias alias="teacherInfoEntityView" type="com.hui.common.webservice.EntityView.TeacherInfoEntityView" />
+	<typeAlias alias="teacherlist" type="com.hui.common.entity.teacherList" />
+
+	<resultMap class="com.hui.common.entity.TeacherInfo" id="teacherinfoResult">
+		<result property="teacherId" column="teacher_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="teacherName" column="teacher_name" />
+		<result property="teacherDesc" column="teacher_desc" />
+		<result property="grade" resultMap="grade.gradeResult" />
+		<result property="subject" resultMap="subject.subjectResult" />
+		<result property="teacherTitle" column="teacher_title" />
+		<result property="onlineStatus" column="online_status" />
+	</resultMap>
+	
+	<resultMap class="com.hui.common.entity.TeacherInfo" id="originalTeacherInfoResult">
+		<result property="teacherId" column="teacher_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="teacherName" column="teacher_name" />
+		<result property="teacherDesc" column="teacher_desc" />
+		<result property="teacherTitle" column="teacher_title" />
+		<result property="onlineStatus" column="online_status" />
+	</resultMap>
+	
+	<resultMap class="com.hui.common.entity.teacherList" id="TeacherListResult">
+		<result property="huidaNo" column="hui_no" />
+		<result property="teacherName" column="teacher_name" />
+		<result property="onlineStatus" column="online_status" />
+	</resultMap>
+	
+	<sql id="fileds">
+		t.teacher_id,
+		t.hui_no,
+		t.teacher_name,
+		t.teacher_desc,
+		t.teacher_title,
+		t.online_status
+	</sql>
+	<sql id="grade_fileds">
+		g.grade_id,
+		g.grade_name
+	</sql>
+	<sql id="subject_fileds">
+		s.sub_id,
+		s.sub_name
+	</sql>
+	
+	<select id="selectById" parameterClass="int" resultMap="teacherinfoResult">
+		SELECT
+			<include refid="teacherinfo.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			teacherinfo t
+		LEFT JOIN grade g ON t.grade_id = g.grade_id
+		LEFT JOIN subject s ON t.subject_id = s.sub_id
+		WHERE
+		t.teacher_id = #teacherId#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="teacherinfoResult">
+		SELECT
+			<include refid="teacherinfo.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			teacherinfo t
+		LEFT JOIN grade g ON t.grade_id = g.grade_id
+		LEFT JOIN subject s ON t.subject_id = s.sub_id
+		WHERE 1=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					t.hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="teacherName">
+				<isNotEmpty property="teacherName" prepend="and">
+					t.teacher_name like CONCAT('%', #teacherName#, '%')
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="onlineStatus">
+				<isNotEmpty property="onlineStatus" prepend="and">
+					t.online_status = #onlineStatus#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="subjectId">
+				<isNotEmpty property="subjectId" prepend="and">
+					t.subject_id = #subjectId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="gradeId">
+				<isNotEmpty property="gradeId" prepend="and">
+					t.grade_id = #gradeId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="start">
+				<isNotEmpty property="start">
+					limit #start#,#size#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<select id="selectAllE" parameterClass="teacherinfo" resultMap="teacherinfoResult">
+		SELECT
+			<include refid="teacherinfo.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			teacherinfo t
+		LEFT JOIN grade g ON t.grade_id = g.grade_id
+		LEFT JOIN subject s ON t.subject_id = s.sub_id
+		WHERE 1=1
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					t.hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="teacherName">
+				<isNotEmpty property="teacherName" prepend="and">
+					t.teacher_name like CONCAT('%', #teacherName#, '%')
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="onlineStatus">
+				<isNotEmpty property="onlineStatus" prepend="and">
+					t.online_status = #onlineStatus#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="subject.subId">
+				<isNotEmpty property="subject.subId" prepend="and">
+					t.subject_id = #subject.subId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="grade.gradeId">
+				<isNotEmpty property="grade.gradeId" prepend="and">
+					t.grade_id = #grade.gradeId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="start">
+				<isNotEmpty property="start">
+					limit #start#,#size#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			teacherinfo t
+		LEFT JOIN grade g ON t.grade_id = g.grade_id
+		LEFT JOIN subject s ON t.subject_id = s.sub_id
+		WHERE 1=1 
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					t.hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="teacherName">
+				<isNotEmpty property="teacherName" prepend="and">
+					t.teacher_name like CONCAT('%', #teacherName#, '%')
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="onlineStatus">
+				<isNotEmpty property="onlineStatus" prepend="and">
+					t.online_status = #onlineStatus#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="subjectId">
+				<isNotEmpty property="subjectId" prepend="and">
+					t.subject_id = #subjectId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="gradeId">
+				<isNotEmpty property="gradeId" prepend="and">
+					t.grade_id = #gradeId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<select id="getCountE" parameterClass="teacherinfo" resultClass="int">
+		select
+			count(1) 
+		FROM
+			teacherinfo t
+		LEFT JOIN grade g ON t.grade_id = g.grade_id
+		LEFT JOIN subject s ON t.subject_id = s.sub_id
+		WHERE 1=1 
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotEmpty property="huiNo" prepend="and">
+					t.hui_no = #huiNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="teacherName">
+				<isNotEmpty property="teacherName" prepend="and">
+					t.teacher_name like CONCAT('%', #teacherName#, '%')
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="onlineStatus">
+				<isNotEmpty property="onlineStatus" prepend="and">
+					t.online_status = #onlineStatus#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="subject.subId">
+				<isNotEmpty property="subject.subId" prepend="and">
+					t.subject_id = #subject.subId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="grade.gradeId">
+				<isNotEmpty property="grade.gradeId" prepend="and">
+					t.grade_id = #grade.gradeId#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="teacherinfo">
+		<selectKey resultClass="int" keyProperty="teacherId">
+			select
+			ifnull(max(teacher_id),0)
+			+ 1
+			as teacherId
+			from teacherinfo 
+    	</selectKey>
+		INSERT INTO teacherinfo
+		(
+		teacher_id,
+		hui_no,
+		teacher_name,
+		teacher_desc,
+		grade_id,
+		subject_id,
+		teacher_title,
+		online_status
+		)
+		VALUES
+		(
+		#teacherId#,
+		#huiNo#,
+		#teacherName#,
+		#teacherDesc#,
+		#grade.gradeId#,
+		#subject.subId#,
+		#teacherTitle#,
+		#onlineStatus#
+		)
+	</insert>
+	
+	<update id="update" parameterClass="teacherinfo">
+		update teacherinfo set teacher_id=#teacherId#
+		<isNotEmpty prepend="," property="huiNo">
+			hui_no =
+			#huiNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="teacherName">
+			teacher_name =
+			#teacherName#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="teacherDesc">
+			teacher_desc =
+			#teacherDesc#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="grade.gradeId">
+			grade_id =
+			#grade.gradeId#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="subject.subId">
+			subject_id =
+			#subject.subId#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="teacherTitle">
+			teacher_title = #teacherTitle#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="onlineStatus">
+			online_status = #onlineStatus#
+		</isNotEmpty>
+		where
+		teacher_id=#teacherId#
+	</update>
+	
+	<select id="queryTeacherInfoList" parameterClass="map" resultMap="originalTeacherInfoResult">
+		select 	teacher_id, hui_no, teacher_name, teacher_desc, teacher_title, online_status 
+		from teacherinfo where 1=1
+		<dynamic>
+			<isPropertyAvailable property="onlineStatus">
+				<isNotEmpty property="onlineStatus" prepend="and">
+					online_status = #onlineStatus#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="huidaNo">
+				<isNotEmpty property="huidaNo" prepend="and">
+					hui_no = #huidaNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+		order by teacher_id
+	</select>
+	
+	<select id="getTeacherInformation" parameterClass="map" resultClass="teacherInfoEntityView">
+		select d.*,c.answer_no as answers,round(ifnull(c.accept_no/c.answer_no*100,0),2) as accepts    
+		from user c ,(select aa.*,b.onLineTimes     
+		from (select a.hui_no as huidaNo,a.teacher_name as name,a.teacher_desc as introduction,   
+		a.teacher_title as teacherTitle,teacher_id from teacherinfo  a where a.hui_no=#huidaNo#) aa    
+		left join 
+		(select teacher_id,sum(round(ifnull(end_time-begin_time,0)/60/60,0)) as onLineTimes from  onlineduration where  
+		begin_time>=UNIX_TIMESTAMP(#beginTime#)    
+		and <![CDATA[end_time<=UNIX_TIMESTAMP(#endTime#)]]>
+		group by teacher_id) b on aa.teacher_id=b.teacher_id ) d where c.hui_no=d.huidaNo  
+	</select>
+	
+	<select id="getTeachersList" parameterClass="map" resultMap="TeacherListResult">
+		SELECT
+			<include refid="teacherinfo.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			teacherinfo t
+		LEFT JOIN grade g ON t.grade_id = g.grade_id
+		LEFT JOIN subject s ON t.subject_id = s.sub_id
+		WHERE 1=1
+		<dynamic>
+			<isPropertyAvailable property="huidaNo">
+				<isNotEmpty property="huidaNo" prepend="and">
+					t.hui_no = #huidaNo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="subjectName">
+				<isNotEmpty property="subjectName" prepend="and">
+					s.sub_name = #subjectName#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="gradeName">
+				<isNotEmpty property="gradeName" prepend="and">
+					g.grade_name = #gradeName#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+		order by teacher_id desc limit #pageSize# offset #offset#
+	</select>
+
+</sqlMap>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysdata">
+	<typeAlias alias="sysdata" type="com.hui.common.entity.SysData" />
+
+	<resultMap class="com.hui.common.entity.SysData" id="sysDataResult">
+		<result property="dataId" column="data_id" />
+		<result property="dataCode" column="data_code" />
+		<result property="dataValue" column="data_value" />
+		<result property="detail" column="detail" />
+	</resultMap>
+
+	<select id="selectAll" parameterClass="sysdata" resultMap="sysDataResult">
+		SELECT
+		*
+		FROM
+		sysdata
+	</select>
+	
+	<select id="selectByKey" parameterClass="sysdata" resultMap="sysDataResult">
+		SELECT * FROM sysdata WHERE 1=1
+		<dynamic>
+			<isPropertyAvailable property="dataCode">
+				<isNotNull property="dataCode" prepend="and">
+					data_code=#dataCode#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+</sqlMap>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="commonlogin">
+	<typeAlias alias="commonlogin" type="com.hui.common.entity.CommonLogin" />
+
+	<resultMap class="com.hui.common.entity.CommonLogin" id="commonloginResult">
+		<result property="loginId" column="login_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="commonKey" column="common_key" />
+		<result property="type" column="type" />
+		<result property="createTime" column="create_time" />
+	</resultMap>
+	
+	<select id="selectById" parameterClass="int" resultMap="commonloginResult">
+		SELECT
+		*
+		FROM
+		common_login
+		WHERE
+		login_id = #loginId#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="commonloginResult">
+		SELECT
+		*
+		FROM
+		common_login where 1=1 
+		<dynamic>
+			<isPropertyAvailable property="huiNo">
+				<isNotNull property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="commonKey">
+				<isNotNull property="commonKey" prepend="and">
+					common_key = #commonKey#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="type">
+				<isNotNull property="type" prepend="and">
+					type = #type#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			common_login where 1=1 
+			<dynamic>
+				<isPropertyAvailable property="huiNo">
+				<isNotNull property="huiNo" prepend="and">
+					hui_no = #huiNo#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="commonKey">
+				<isNotNull property="commonKey" prepend="and">
+					common_key = #commonKey#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="type">
+				<isNotNull property="type" prepend="and">
+					type = #type#
+				</isNotNull>
+			</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="commonlogin">
+		<selectKey resultClass="int" keyProperty="loginId">
+			select
+			max(login_id)
+			+ 1
+			as loginId
+			from common_login 
+    	</selectKey>
+		INSERT INTO common_login
+		(
+		login_id,
+		hui_no,
+		common_key,
+		type,
+		create_time
+		)
+		VALUES
+		(
+		#loginId#,
+		#huiNo#,
+		#commonKey#,
+		#type#,
+		#createTime#
+		)
+	</insert>
+
+</sqlMap>

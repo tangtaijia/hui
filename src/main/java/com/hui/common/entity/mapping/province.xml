@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="province">
+	<typeAlias alias="province" type="com.hui.common.entity.Province" />
+
+	<resultMap class="com.hui.common.entity.Province" id="provinceResult">
+		<result property="provinceId" column="province_id" />
+		<result property="provinceName" column="province_name" />
+	</resultMap>
+	
+	<select id="selectAll" parameterClass="map" resultMap="provinceResult">
+		SELECT
+		*
+		FROM
+		r_province
+		<dynamic>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<select id="selectById" parameterClass="int" resultMap="provinceResult">
+		SELECT
+		*
+		FROM
+		r_province
+		WHERE
+		province_id = #provinceId#
+	</select>
+
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			r_province
+	</select>
+	
+	<insert id="save" parameterClass="province">
+	<!-- 
+		<selectKey resultClass="int" keyProperty="provinceId">
+			select
+			max(province_id)
+			+ 1
+			as provinceId
+			from r_province 
+    	</selectKey>
+	 -->
+		INSERT INTO r_province
+		(
+		province_id,
+		province_name
+		)
+		VALUES
+		(
+		#provinceId#,
+		#provinceName#
+		)
+	</insert>
+
+</sqlMap>

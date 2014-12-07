@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!--
+		scope="prototype"（多态）是在每次用户发起请求时重新生成action对象，
+		如果没有配置scope=prototype则添加的时候不会新建一个action，它仍然会保留上次访问的过记录的信息。
+		默认是scope="singleton"（单例），这些bean被spring初始化后，始终只有一份，
+		很适用于无状态的bean，DAO、Service都采用的这种。当然，scope的值还有session,request等等
+	-->
+	<bean id="loginAction" scope="prototype" class="com.hui.front.LoginAction">
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+	</bean>
+	
+	<bean id="frontAction" scope="prototype" class="com.hui.front.FrontAction">
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+		<property name="gradeServiceImpl">
+			<ref bean="gradeServiceImpl" />
+		</property>
+		<property name="subjectServiceImpl">
+			<ref bean="subjectServiceImpl" />
+		</property>
+		<property name="questionServiceImpl">
+			<ref bean="questionServiceImpl" />
+		</property>
+		<property name="messageService">
+			<ref bean="messageService" />
+		</property>
+		<property name="sysMsgService">
+			<ref bean="sysMsgService" />
+		</property>
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+	</bean>
+	
+	<bean id="helpCenterAction" scope="prototype" class="com.hui.front.HelpCenterAction">
+	</bean>
+	
+	<bean id="questionAction" scope="prototype" class="com.hui.front.QuestionAction">
+		<property name="questionServiceImpl">
+			<ref bean="questionServiceImpl" />
+		</property>
+		<property name="answerService">
+			<ref bean="answerService" />
+		</property>
+		<property name="collectionService">
+			<ref bean="collectionService" />
+		</property>
+		<property name="gradeServiceImpl">
+			<ref bean="gradeServiceImpl" />
+		</property>
+		<property name="subjectServiceImpl">
+			<ref bean="subjectServiceImpl" />
+		</property>
+	</bean>
+
+	<bean id="loginAdminAction" scope="prototype"
+		class="com.hui.back.LoginAdminAction">
+		<property name="adminService">
+			<ref bean="adminService" />
+		</property>
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+	</bean>
+
+	<bean id="adminCenterAction" scope="prototype"
+		class="com.hui.back.AdminCenterAction">
+		<property name="sysRoleService">
+			<ref bean="sysRoleService" />
+		</property>
+		<property name="sysMenuService">
+			<ref bean="sysMenuService" />
+		</property>
+	</bean>
+
+	<bean id="userCenterAction" scope="prototype" class="com.hui.uc.UserCenterAction">
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+		<property name="gradeServiceImpl">
+			<ref bean="gradeServiceImpl" />
+		</property>
+		<property name="questionServiceImpl">
+			<ref bean="questionServiceImpl" />
+		</property>
+		<property name="answerService">
+			<ref bean="answerService" />
+		</property>
+		<property name="messageService">
+			<ref bean="messageService" />
+		</property>
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+		<property name="collectionService">
+			<ref bean="collectionService" />
+		</property>
+		<property name="beanFlowService">
+			<ref bean="beanFlowService" />
+		</property>
+	</bean>
+
+	<bean id="uploadAction" scope="prototype"
+		class="com.hui.common.action.UploadAction">
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+		<property name="sysMsgService">
+			<ref bean="sysMsgService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxInvKeywordsAction" scope="prototype" class="com.hui.ajax.AjaxInvKeywordsAction">
+		<property name="invKeywordsService">
+			<ref bean="invKeywordsService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxCheckAction" scope="prototype" class="com.hui.ajax.AjaxCheckAction">
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+		<property name="sysRoleService">
+			<ref bean="sysRoleService" />
+		</property>
+		<property name="adminService">
+			<ref bean="adminService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxUserAction" scope="prototype" class="com.hui.ajax.AjaxUserAction">
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+		<property name="sysRoleService">
+			<ref bean="sysRoleService" />
+		</property>
+		<property name="userFollowService">
+			<ref bean="userFollowService" />
+		</property>
+		<property name="messageService">
+			<ref bean="messageService" />
+		</property>
+		<property name="teacherInfoServiceImpl">
+			<ref bean="teacherInfoServiceImpl" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxBugAction" scope="prototype" class="com.hui.ajax.AjaxBugAction">
+		<property name="bugServiceImpl">
+			<ref bean="bugServiceImpl" />
+		</property>
+	</bean>
+
+	<bean id="ajaxAdminAction" scope="prototype" class="com.hui.ajax.AjaxAdminAction">
+		<property name="adminService">
+			<ref bean="adminService" />
+		</property>
+		<property name="sysRoleService">
+			<ref bean="sysRoleService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysCfgAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysCfgAction">
+		<property name="sysConfigService">
+			<ref bean="sysConfigService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysMenuAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysMenuAction">
+		<property name="sysMenuService">
+			<ref bean="sysMenuService" />
+		</property>
+		<property name="sysRoleService">
+			<ref bean="sysRoleService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysRoleAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysRoleAction">
+		<property name="sysRoleService">
+			<ref bean="sysRoleService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysCacheAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysCacheAction">
+		<property name="sysCacheService">
+			<ref bean="sysCacheService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysFileAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysFileAction">
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysArticleAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysArticleAction">
+		<property name="sysArticleService">
+			<ref bean="sysArticleService" />
+		</property>
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysLogAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysLogAction">
+		<property name="sysLogService">
+			<ref bean="sysLogService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxSysBackUpAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysBackUpAction">
+		<property name="sysBackUpService">
+			<ref bean="sysBackUpService" />
+		</property>
+		<property name="sysTabService">
+			<ref bean="sysTabService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxRegionAction" scope="prototype"
+		class="com.hui.ajax.AjaxRegionAction">
+		<property name="regionService">
+			<ref bean="regionService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxQuestionAction" scope="prototype"
+		class="com.hui.ajax.AjaxQuestionAction">
+		<property name="answerService">
+			<ref bean="answerService" />
+		</property>
+		<property name="questionServiceImpl">
+			<ref bean="questionServiceImpl"/>
+		</property>
+		<property name="praiseService">
+			<ref bean="praiseService" />
+		</property>
+		<property name="questionService">
+			<ref bean="questionService" />
+		</property>
+		<property name="collectionService">
+			<ref bean="collectionService" />
+		</property>
+	</bean>
+
+	<bean id="ajaxBeanFlowAction" scope="prototype"
+		class="com.hui.ajax.AjaxBeanFlowAction">
+		<property name="beanFlowService">
+			<ref bean="beanFlowService" />
+		</property>
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxCashFlowAction" scope="prototype"
+		class="com.hui.ajax.AjaxCashFlowAction">
+		<property name="cashFlowService">
+			<ref bean="cashFlowService" />
+		</property>
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxTeacherAction" scope="prototype"
+		class="com.hui.ajax.AjaxTeacherAction">
+		<property name="teacherInfoServiceImpl">
+			<ref bean="teacherInfoServiceImpl" />
+		</property>
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxSysMsgAction" scope="prototype"
+		class="com.hui.ajax.AjaxSysMsgAction">
+		<property name="sysMsgService">
+			<ref bean="sysMsgService" />
+		</property>
+		<property name="sysFileService">
+			<ref bean="sysFileService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxTeacherQuestionAction" scope="prototype"
+		class="com.hui.ajax.AjaxTeacherQuestionAction">
+		<property name="teacherInfoServiceImpl">
+			<ref bean="teacherInfoServiceImpl" />
+		</property>
+		<property name="questionServiceImpl">
+			<ref bean="questionServiceImpl" />
+		</property>
+		<property name="questionUserService">
+			<ref bean="questionUserService" />
+		</property>
+	</bean>
+	
+	<bean id="ajaxAnswerAction" scope="prototype"
+		class="com.hui.ajax.AjaxAnswerAction">
+		<property name="answerService">
+			<ref bean="answerService" />
+		</property>
+	</bean>
+	<bean id="ajaxFrontAction" scope="prototype"
+		class="com.hui.ajax.AjaxFrontAction">
+		<property name="userService">
+			<ref bean="userService" />
+		</property>
+		<property name="messageService">
+			<ref bean="messageService" />
+		</property>
+	</bean>
+
+</beans>

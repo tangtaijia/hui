@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysarticle">
+	<typeAlias alias="sysarticle" type="com.hui.common.entity.SysArticle" />
+
+	<resultMap class="com.hui.common.entity.SysArticle" id="sysArticleResult">
+		<result property="articleId" column="article_id" />
+		<result property="articleTitle" column="article_title" />
+		<result property="articleType" column="article_type" />
+		<result property="contentType" column="content_type" />
+		<result property="contentValue" column="content_value" />
+		<result property="validateFrom" column="validate_from" />
+		<result property="validateTo" column="validate_to" />
+		<result property="status" column="status" />
+		<result property="sortOrder" column="sort_order" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysArticleResult">
+		SELECT
+		*
+		FROM
+		sysarticle
+		WHERE
+		article_id = #id#
+	</select>
+
+	<select id="selectAll" parameterClass="sysarticle" resultMap="sysArticleResult">
+		SELECT
+		*
+		FROM
+		sysarticle
+		order by article_id asc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="sysarticle" resultClass="int">
+		select
+		count(*) from sysarticle
+	</select>
+
+	<insert id="save" parameterClass="sysarticle">
+		<selectKey resultClass="int" keyProperty="articleId">
+			select
+			ifnull(max(article_id),0)
+			+ 1
+			as articleId
+			from sysarticle 
+    	</selectKey>
+		INSERT INTO sysarticle
+		(
+		article_id,
+		article_title,
+		article_type,
+		content_type,
+		content_value,
+		validate_from,
+		validate_to,
+		status,
+		sort_order
+		)
+		VALUES
+		(
+		#articleId#,
+		#articleTitle#,
+		#articleType#,
+		#contentType#,
+		#contentValue#,
+		#validateFrom#,
+		#validateTo#,
+		#status#,
+		#sortOrder#
+		)
+	</insert>
+
+	<update id="update" parameterClass="sysarticle">
+		update sysarticle set article_id=#articleId#
+		<isNotNull prepend="," property="articleTitle">
+			article_title =
+			#articleTitle#
+		</isNotNull>
+		<isNotNull prepend="," property="contentValue">
+			content_value =
+			#contentValue#
+		</isNotNull>
+		<isNotNull prepend="," property="status">
+			status =
+			#status#
+		</isNotNull>
+		<isNotNull prepend="," property="validateFrom">
+			validate_from =
+			#validateFrom#
+		</isNotNull>
+		<isNotNull prepend="," property="validateTo">
+			validate_to =
+			#validateTo#
+		</isNotNull>
+		<isNotNull prepend="," property="sortOrder">
+			sort_order = #sortOrder#
+		</isNotNull>
+		where
+		article_id=#articleId#
+	</update>
+
+	<delete id="delete" parameterClass="java.util.HashMap">
+		delete from sysarticle where article_id in
+		<iterate property="ids" open="(" close=")" conjunction=",">
+			#ids[]#
+		</iterate>
+	</delete>
+
+</sqlMap>

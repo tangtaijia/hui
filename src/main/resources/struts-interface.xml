@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="interface" namespace="/interface" extends="json-default">
+		<!-- 用户信息action -->
+		<action name="login" class="com.hui.common.action.mobileaction.UserInfoAction">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		<action name="logout" class="com.hui.common.action.mobileaction.UserInfoAction" method="logout">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		<action name="isLogin" class="com.hui.common.action.mobileaction.UserInfoAction" method="isLogin"></action>
+		
+		<action name="isNicknameExists" class="com.hui.common.action.mobileaction.UserInfoAction" method="isNicknameExists">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="isMobileExists" class="com.hui.common.action.mobileaction.UserInfoAction" method="isMobileExists">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="register" class="com.hui.common.action.mobileaction.UserInfoAction" method="register">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="resetPassword" class="com.hui.common.action.mobileaction.UserInfoAction" method="resetPassword">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="getNickname" class="com.hui.common.action.mobileaction.UserInfoAction" method="getNickname"></action>
+		
+		<action name="getHuiDouCount" class="com.hui.common.action.mobileaction.UserInfoAction" method="getHuiDouCount"></action>
+		
+		<action name="modifyNickname" class="com.hui.common.action.mobileaction.UserInfoAction" method="modifyNickname">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="binding" class="com.hui.common.action.mobileaction.UserInfoAction" method="binding">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="modifyPassword" class="com.hui.common.action.mobileaction.UserInfoAction" method="modifyPassword">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="sendIdentifyingCode" class="com.hui.common.action.mobileaction.UserInfoAction" method="sendIdentifyingCode">
+		</action>
+		
+		<action name="getMobile" class="com.hui.common.action.mobileaction.UserInfoAction" method="getMobile">
+		</action>
+		
+		
+		<!-- 好友关注action -->
+		<action name="getFollowList" class="com.hui.common.action.mobileaction.UserFollowAction">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="addFollow" class="com.hui.common.action.mobileaction.UserFollowAction" method="addFollow">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="getFriendsList" class="com.hui.common.action.mobileaction.UserFollowAction" method="getFriendsList">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="addFriend" class="com.hui.common.action.mobileaction.UserFollowAction" method="addFollow">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="searchFriends" class="com.hui.common.action.mobileaction.UserFollowAction" method="searchFriends">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="searchAllUsers" class="com.hui.common.action.mobileaction.UserFollowAction" method="searchAllUsers">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getOtherInformation" class="com.hui.common.action.mobileaction.UserFollowAction" method="getOtherInformation">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getFollows" class="com.hui.common.action.mobileaction.UserFollowAction" method="getFollows"></action>
+		
+		<action name="getFriends" class="com.hui.common.action.mobileaction.UserFollowAction" method="getFriends"></action>
+		
+		<action name="isMyFriend" class="com.hui.common.action.mobileaction.UserFollowAction" method="isMyFriend"></action>
+		
+		
+		<!-- 回答action -->
+		<action name="getAnswerTrends" class="com.hui.common.action.mobileaction.AnswerInfoAction">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.answerNo,.*\.huidaNo,.*\.nickname,.*\.isBestAnswer,
+					.*\.thumbnailUrl,.*\.imageId,.*\.questionDescription,.*\.answerHasImage,.*\.answers
+				</param>
+			</result>
+		</action>
+		
+		<action name="getAnswerListByQuestionId" class="com.hui.common.action.mobileaction.AnswerInfoAction" method="getAnswerListByQuestionId">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.gradeText,.*\.courseText,.*\.hasImage,.*\.questionId,.*\.questionDescription,.*\.answerHasImage,.*\.answers
+				</param>
+			</result>
+		</action>
+		
+		<action name="setBestAnswer" class="com.hui.common.action.mobileaction.AnswerInfoAction" method="setBestAnswer">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="getMyAnswersList" class="com.hui.common.action.mobileaction.AnswerInfoAction" method="getMyAnswersList">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.answerNo,.*\.huidaNo,.*\.nickname,.*\.isBestAnswer,
+					.*\.thumbnailUrl,.*\.imageId
+				</param>
+			</result>
+		</action>
+		
+		<action name="answerQuestion" class="com.hui.common.action.mobileaction.AnswerInfoAction" method="answerQuestion">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<!-- 充值action -->
+		<action name="getRechargeList" class="com.hui.common.action.mobileaction.RechargeAction">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<!-- 消息action -->
+		<action name="getAnswerMeCountByUnread" class="com.hui.common.action.mobileaction.MessageAction"></action>
+		
+		<action name="getAskMeCountByUnread" class="com.hui.common.action.mobileaction.MessageAction" method="getAskMeCountByUnread">
+		</action>
+		
+		<action name="getAcceptMeCountByUnread" class="com.hui.common.action.mobileaction.MessageAction" method="getAcceptMeCountByUnread">
+		</action>
+		
+		<action name="getSystemMessageByUnread" class="com.hui.common.action.mobileaction.MessageAction" method="getSystemMessageByUnread">
+		</action>
+		
+		<action name="getAnswerMeList" class="com.hui.common.action.mobileaction.MessageAction" method="getAnswerMeList">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getAskMeList" class="com.hui.common.action.mobileaction.MessageAction" method="getAskMeList">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getAcceptMeList" class="com.hui.common.action.mobileaction.MessageAction" method="getAcceptMeList">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getSystemMessageList" class="com.hui.common.action.mobileaction.MessageAction" method="getSystemMessageList">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getSystemMessageDetail" class="com.hui.common.action.mobileaction.MessageAction" method="getSystemMessageDetail">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="setMessageRead" class="com.hui.common.action.mobileaction.MessageAction" method="setMessageRead">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="setAnswerMeRead" class="com.hui.common.action.mobileaction.MessageAction" method="setAnswerMeRead">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="setAskMeRead" class="com.hui.common.action.mobileaction.MessageAction" method="setAskMeRead">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="setAcceptMeRead" class="com.hui.common.action.mobileaction.MessageAction" method="setAcceptMeRead">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<!-- 问题action -->
+		<action name="getQuestionDetailById" class="com.hui.common.action.mobileaction.QuestionInfoAction">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.hasImage,.*\.huidaNo
+				</param>
+			</result>
+		</action>
+		
+		<action name="getImageUrl" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="getImageUrl">
+		</action>
+		
+		<action name="getMyQuestionsList" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="getMyQuestionsList">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.reward,.*\.thumbnailUrl,.*\.imageId,.*\.hasBestAnswer,.*\.huidaNo,.*\.nickname
+				</param>
+			</result>
+		</action>
+		
+		<action name="getAllQuestionList" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="getAllQuestionPaingList">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.hasImage,.*\.imageId,.*\.nickname
+				</param>
+			</result>
+		</action>
+		
+		<action name="getQuestionSearchByKey" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="getQuestionSearchByKey">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.reward,.*\.thumbnailUrl,.*\.hasImage,.*\.imageId,.*\.hasBestAnswer
+				</param>
+			</result>
+		</action>
+		
+		<action name="getLastSpeechUserList" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="getLastSpeechUserList">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.nickName,.*\.gradeText,.*\.subjectText,.*\.speechFlag
+				</param>
+			</result>
+		</action>
+		
+		<action name="AskStudent" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="AskStudent">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="AskTeacher" class="com.hui.common.action.mobileaction.QuestionInfoAction" method="AskTeacher">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<!-- 点赞 -->
+		<action name="praise" class="com.hui.common.action.mobileaction.praiseAction">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="hasPraised" class="com.hui.common.action.mobileaction.praiseAction" method="hasPraised">
+		</action>
+		
+		<action name="getPraisedCount" class="com.hui.common.action.mobileaction.praiseAction" method="getPraisedCount">
+		</action>
+		
+		<!-- 帮助中心action -->
+		<action name="getHelpList" class="com.hui.common.action.mobileaction.HelpInfoAction">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.size,.*\.start
+				</param>
+			</result>
+		</action>
+		
+		<action name="getHelpDetail" class="com.hui.common.action.mobileaction.HelpInfoAction" method="getHelpDetail">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<!-- bug submit action -->
+		<action name="submitSoftBug" class="com.hui.common.action.mobileaction.SubmitBugAction">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<!-- sysdata action -->
+		<action name="getQRCode" class="com.hui.common.action.mobileaction.SysDataAction">
+		</action>
+		
+		<action name="getLastVersion" class="com.hui.common.action.mobileaction.SysDataAction" method="getLastVersion">
+		</action>
+		
+		<action name="getSoftDownloadAddress" class="com.hui.common.action.mobileaction.SysDataAction" method="getSoftDownloadAddress">
+		</action>
+		
+		<!-- grade action -->
+		<action name="getGradeList" class="com.hui.common.action.mobileaction.GradeInfoAction">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<action name="getCourseListByGradeId" class="com.hui.common.action.mobileaction.GradeInfoAction" method="getCourseListByGradeId">
+			<result type="json">
+				<param name="root">resultList</param>
+			</result>
+		</action>
+		
+		<!-- teacherinfo action -->
+		<action name="getDutyTeacherList" class="com.hui.common.action.mobileaction.TeacherInfoAction">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.answers,.*\.accepts,.*\.onLineTimes,.*\.teacherTitle
+				</param>
+			</result>
+		</action>
+		
+		<action name="getTeacherInformation" class="com.hui.common.action.mobileaction.TeacherInfoAction" method="getTeacherInformation">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.teacherTitle
+				</param>
+			</result>
+		</action>
+		
+		<action name="getTeachersList" class="com.hui.common.action.mobileaction.TeacherInfoAction" method="getTeachersList">
+			<result type="json">
+				<param name="root">resultList</param>
+				<param name="excludeProperties">
+					.*\.teacherTitle
+				</param>
+			</result>
+		</action>
+		
+		<!-- userphoto action -->
+		<action name="uploadUserIcon" class="com.hui.common.action.mobileaction.UserPhotoAction">
+			<result type="json">
+				<param name="root">jsonResult</param>
+			</result>
+		</action>
+		
+		<action name="getUserIcon" class="com.hui.common.action.mobileaction.UserPhotoAction" method="getUserIcon">
+		</action>
+		
+	</package>
+</struts>

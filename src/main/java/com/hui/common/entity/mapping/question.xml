@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="question">
+	<typeAlias alias="question" type="com.hui.common.entity.Question" />
+	<typeAlias alias="questionEntityView" type="com.hui.common.webservice.EntityView.QuestionEntityView"/>
+	<typeAlias alias="lastSpeechEntityView" type="com.hui.common.webservice.EntityView.LastSpeechEntityView"/>
+
+	<resultMap class="com.hui.common.entity.Question" id="questionResult">
+		<result property="qId" column="q_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="questionDesc" column="question_desc" />
+		<result property="grade" resultMap="grade.gradeResult" />
+		<result property="subject" resultMap="subject.subjectResult" />
+		<result property="clientStyle" column="client_style" />
+		<result property="isReward" column="is_reward" />
+		<result property="rewardAmount" column="reward_amount" />
+		<result property="createTime" column="create_time" />
+		<result property="toTeacher" column="to_teacher" />
+		<result property="allocated" column="allocated" />
+		<result property="answerNum" column="answer_num" />
+		<result property="hasAnswer" column="has_answer" />
+		<result property="hasImg" column="has_img" />
+		<result property="hasFavorate" column="has_favorate" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<sql id="fileds">
+		q.q_id,
+		q.hui_no,
+		q.question_desc,
+		q.client_style,
+		q.is_reward,
+		q.reward_amount,
+		q.create_time,
+		q.to_teacher,
+		q.allocated,
+		q.answer_num,
+		q.has_answer,
+		q.has_img,
+		q.has_favorate,
+		q.status
+	</sql>
+	<sql id="grade_fileds">
+		g.grade_id,
+		g.grade_name
+	</sql>
+	<sql id="subject_fileds">
+		s.sub_id,
+		s.sub_name
+	</sql>
+	
+	<select id="selectById" parameterClass="int" resultMap="questionResult">
+		SELECT
+			<include refid="question.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			question q
+		LEFT JOIN grade g ON q.grade_id = g.grade_id
+		LEFT JOIN subject s ON q.subject_id = s.sub_id
+		WHERE
+		q.q_id = #qId#
+	</select>
+	
+	<select id="getAll" parameterClass="map" resultMap="questionResult">
+		SELECT
+			<include refid="question.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			question q
+		LEFT JOIN grade g ON q.grade_id = g.grade_id
+		LEFT JOIN subject s ON q.subject_id = s.sub_id
+		WHERE
+			1 = 1 AND q.status = 1 
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						q.hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="questionDesc">
+					<isNotNull property="questionDesc" prepend="and">
+						q.question_desc  like
+							CONCAT('%', #questionDesc#,
+							'%')
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isReward">
+					<isNotNull property="isReward" prepend="and">
+						q.is_reward = #isReward#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasAnswer">
+					<isNotNull property="hasAnswer" prepend="and">
+						q.has_answer = #hasAnswer# 
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="gradeId">
+					<isNotNull property="gradeId" prepend="and">
+						q.grade_id = #gradeId#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="subId">
+					<isNotNull property="subId" prepend="and">
+						q.subject_id = #subId#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="toTeacher">
+					<isNotNull property="toTeacher" prepend="and">
+						q.to_teacher = #toTeacher#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasFavorate">
+					<isNotNull property="hasFavorate" prepend="and">
+						q.has_favorate = #hasFavorate#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="qId">
+					<isNotNull property="qId" prepend="and">
+						q.q_id = #qId#
+					</isNotNull>
+				</isPropertyAvailable>
+				order by q.create_time desc,q.q_id desc
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</dynamic>
+	</select>
+	
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select count(1) 
+			FROM
+				question q
+			LEFT JOIN grade g ON q.grade_id = g.grade_id
+			LEFT JOIN subject s ON q.subject_id = s.sub_id
+			WHERE
+				1 = 1 AND q.status = 1
+			<dynamic>
+				<isPropertyAvailable property="huidaNo">
+					<isNotNull property="huidaNo" prepend="and">
+						q.hui_no = #huidaNo#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="questionDesc">
+					<isNotNull property="questionDesc" prepend="and">
+						q.question_desc  like
+							CONCAT('%', #questionDesc#,
+							'%')
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isReward">
+					<isNotNull property="isReward" prepend="and">
+						q.is_reward = #isReward#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasAnswer">
+					<isNotNull property="hasAnswer" prepend="and">
+						q.has_answer = #hasAnswer#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="gradeId">
+					<isNotNull property="gradeId" prepend="and">
+						q.grade_id = #gradeId#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="subId">
+					<isNotNull property="subId" prepend="and">
+						q.subject_id = #subId#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="toTeacher">
+					<isNotNull property="toTeacher" prepend="and">
+						q.to_teacher = #toTeacher#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasFavorate">
+					<isNotNull property="hasFavorate" prepend="and">
+						q.has_favorate = #hasFavorate#
+					</isNotNull>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="qId">
+					<isNotNull property="qId" prepend="and">
+						q.q_id = #qId#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<select id="getAllE" parameterClass="question" resultMap="questionResult">
+		SELECT
+			<include refid="question.fileds"/>,
+			<include refid="grade_fileds"/>,
+			<include refid="subject_fileds"/>
+		FROM
+			question q
+		LEFT JOIN grade g ON q.grade_id = g.grade_id
+		LEFT JOIN subject s ON q.subject_id = s.sub_id
+		WHERE
+			1 = 1 AND q.status = 1 
+			<dynamic>
+				<isPropertyAvailable property="huiNo">
+					<isNotEmpty property="huiNo" prepend="and">
+						q.hui_no = #huiNo#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="questionDesc">
+					<isNotEmpty property="questionDesc" prepend="and">
+						q.question_desc  like
+							CONCAT('%', #questionDesc#,
+							'%')
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isReward">
+					<isNotEmpty property="isReward" prepend="and">
+						q.is_reward = #isReward#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasAnswer">
+					<isNotEmpty property="hasAnswer" prepend="and">
+						q.has_answer = #hasAnswer#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="grade.gradeId">
+					<isNotEmpty property="grade.gradeId" prepend="and">
+						q.grade_id = #grade.gradeId#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="subject.subId">
+					<isNotEmpty property="subject.subId" prepend="and">
+						q.subject_id = #subject.subId#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="toTeacher">
+					<isNotEmpty property="toTeacher" prepend="and">
+						q.to_teacher = #toTeacher#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasFavorate">
+					<isNotEmpty property="hasFavorate" prepend="and">
+						q.has_favorate = #hasFavorate#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="qId">
+					<isNotEmpty property="qId" prepend="and">
+						q.q_id = #qId#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="allocated">
+					<isNotEmpty property="allocated" prepend="and">
+						q.allocated = #allocated#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="createTimeFrom">
+					<isNotEmpty property="createTimeFrom" prepend="and">
+						q.create_time &gt;= #createTimeFrom#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="createTimeTo">
+					<isNotEmpty property="createTimeTo" prepend="and">
+						q.create_time &lt;= #createTimeTo#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="outTime">
+					<isNotNull property="outTime" prepend="and">
+						q.create_time+3600 &lt; UNIX_TIMESTAMP()
+					</isNotNull>
+				</isPropertyAvailable>
+				order by q.create_time desc,q.q_id desc
+				<isNotEmpty property="start">
+					limit #start#,#size#
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<select id="getCountE" parameterClass="question" resultClass="int">
+		select count(1) 
+			FROM
+				question q
+			LEFT JOIN grade g ON q.grade_id = g.grade_id
+			LEFT JOIN subject s ON q.subject_id = s.sub_id
+			WHERE
+				1 = 1 AND q.status = 1
+			<dynamic>
+				<isPropertyAvailable property="huiNo">
+					<isNotEmpty property="huiNo" prepend="and">
+						q.hui_no = #huiNo#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="questionDesc">
+					<isNotEmpty property="questionDesc" prepend="and">
+						q.question_desc  like
+							CONCAT('%', #questionDesc#,
+							'%')
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="isReward">
+					<isNotEmpty property="isReward" prepend="and">
+						q.is_reward = #isReward#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasAnswer">
+					<isNotEmpty property="hasAnswer" prepend="and">
+						q.has_answer = #hasAnswer#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="grade.gradeId">
+					<isNotEmpty property="grade.gradeId" prepend="and">
+						q.grade_id = #grade.gradeId#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="subject.subId">
+					<isNotEmpty property="subject.subId" prepend="and">
+						q.subject_id = #subject.subId#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="toTeacher">
+					<isNotEmpty property="toTeacher" prepend="and">
+						q.to_teacher = #toTeacher#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="hasFavorate">
+					<isNotEmpty property="hasFavorate" prepend="and">
+						q.has_favorate = #hasFavorate#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="qId">
+					<isNotEmpty property="qId" prepend="and">
+						q.q_id = #qId#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="allocated">
+					<isNotEmpty property="allocated" prepend="and">
+						q.allocated = #allocated#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="createTimeFrom">
+					<isNotEmpty property="createTimeFrom" prepend="and">
+						q.create_time &gt;= #createTimeFrom#
+					</isNotEmpty>
+				</isPropertyAvailable>
+				<isPropertyAvailable property="createTimeTo">
+					<isNotEmpty property="createTimeTo" prepend="and">
+						q.create_time &lt;= #createTimeTo#
+					</isNotEmpty>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	
+	<select id="selectImagesByQId" parameterClass="int" resultMap="sysfile.sysFileResult">
+		SELECT
+			*
+		FROM
+			sysfile sf
+		WHERE
+		sf.file_type = 4
+		AND sf.data_id = #qId#
+	</select>
+	
+	<insert id="save" parameterClass="question">
+		<selectKey resultClass="int" keyProperty="qId">
+			select
+			ifnull(max(q_id),0)
+			+ 1
+			as qId
+			from question 
+    	</selectKey>
+		INSERT INTO question
+		(
+		q_id,
+		hui_no,
+		question_desc,
+		grade_id,
+		subject_id,
+		client_style,
+		is_reward,
+		reward_amount,
+		create_time,
+		to_teacher,
+		allocated,
+		answer_num,
+		has_answer,
+		has_img,
+		has_favorate,
+		status
+		)
+		VALUES
+		(
+		#qId#,
+		#huiNo#,
+		#questionDesc#,
+		#grade.gradeId#,
+		#subject.subId#,
+		#clientStyle#,
+		#isReward#,
+		#rewardAmount#,
+		#createTime#,
+		#toTeacher#,
+		#allocated#,
+		#answerNum#,
+		#hasAnswer#,
+		#hasImg#,
+		#hasFavorate#,
+		#status#
+		)
+	</insert>
+	
+	<update id="update" parameterClass="question">
+		update question set q_id=#qId#
+		<isNotNull prepend="," property="huiNo">
+			hui_no =
+			#huiNo#
+		</isNotNull>
+		<isNotNull prepend="," property="questionDesc">
+			question_desc =
+			#questionDesc#
+		</isNotNull>
+		<isNotNull prepend="," property="grade.gradeId">
+			grade_id =
+			#grade.gradeId#
+		</isNotNull>
+		<isNotNull prepend="," property="subject.subId">
+			subject_id =
+			#subject.subId#
+		</isNotNull>
+		<isNotNull prepend="," property="clientStyle">
+			client_style =
+			#clientStyle#
+		</isNotNull>
+		<isNotNull prepend="," property="isReward">
+			is_reward = #isReward#
+		</isNotNull>
+		<isNotNull prepend="," property="rewardAmount">
+			reward_amount = #rewardAmount#
+		</isNotNull>
+		<isNotNull prepend="," property="createTime">
+			create_time = #createTime#
+		</isNotNull>
+		<isNotNull prepend="," property="allocated">
+			allocated = #allocated#
+		</isNotNull>
+		<isNotNull prepend="," property="toTeacher">
+			to_teacher = #toTeacher#
+		</isNotNull>
+		<isNotNull prepend="," property="answerNum">
+			answer_num = #answerNum#
+		</isNotNull>
+		<isNotNull prepend="," property="hasAnswer">
+			has_answer = #hasAnswer#
+		</isNotNull>
+		<isNotNull prepend="," property="hasImg">
+			has_img = #hasImg#
+		</isNotNull>
+		<isNotNull prepend="," property="hasFavorate">
+			has_favorate = #hasFavorate#
+		</isNotNull>
+		<isNotNull prepend="," property="status">
+			status = #status#
+		</isNotNull>
+		where
+		q_id=#qId#
+	</update>
+	
+	<select id="getQuestionDetailById" parameterClass="map" resultClass="questionEntityView">
+		select a.q_id as questionId,c.grade_name as gradetext,b.sub_name as courseText,a.question_desc as questionDescription,
+		a.reward_amount as reward, a.has_img as hasImage,a.create_time as timeTick,a.answer_num as answers,a.has_favorate as hasBestAnswer,
+		d.nick_name as nickname from question a,subject b,grade c,user d where a.q_id=#questionId# and a.status=1
+		and a.grade_id = c.grade_id and a.subject_id=b.sub_id and a.hui_no=d.hui_no
+	</select>
+	
+	<select id="getQuestionsPagingList" parameterClass="map" resultClass="questionEntityView">
+		select a.q_id as questionId,c.grade_name as gradetext,b.sub_name as courseText,a.question_desc as questionDescription,
+		a.has_img as hasImage,a.create_time as timeTick,answer_num as answers
+		from question a,subject b,grade c where a.hui_no=#huidaNo# and status=1
+		and a.grade_id = c.grade_id and a.subject_id=b.sub_id order by a.q_id desc
+		limit #pageSize# offset #offset#
+	</select>
+	
+	<select id="getAllQuestionPaingList" parameterClass="map" resultClass="questionEntityView">
+		select a.q_id as questionId,a.hui_no as huidano, c.grade_name as gradetext,b.sub_name as courseText,a.question_desc as questionDescription,
+		a.has_img as hasImage,a.create_time as timeTick,answer_num as answers,a.has_favorate as hasBestAnswer,a.reward_amount as reward,
+		a.answer_num as answers,d.nick_name as nickname
+		from question a,subject b,grade c,user d where 1=1  and a.status=1 and a.grade_id = c.grade_id and a.subject_id=b.sub_id
+		and a.hui_no = d.hui_no
+		<dynamic>
+			<isPropertyAvailable property="isReward">
+				<isNotNull property="isReward" prepend="and">
+					a.is_reward=#isReward#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="isNoAnswer">
+				<isNotNull property="isNoAnswer" prepend="and">
+					a.has_answer=#isNoAnswer#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="gradeId">
+				<isNotNull property="gradeId" prepend="and">
+					a.grade_id=#gradeId#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="courseId">
+				<isNotNull property="courseId" prepend="and">
+					a.subject_id=#courseId#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="searchKey">
+				<isNotNull property="searchKey" prepend="and">
+					a.question_desc like CONCAT('%', #searchKey#,
+							'%')
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+		order by a.q_id desc limit #pageSize# offset #offset#
+	</select>
+	
+	<select id="getLastSpeechUserList" parameterClass="map" resultClass="lastSpeechEntityView">
+		select * from (select a.hui_no as huidano,0 as speechFlag,a.create_time,b.nick_name as nickname,c.grade_name as gradetext,d.sub_name as subjecttext
+		from question a,user b,grade c,subject d where a.hui_no=b.hui_no 
+		and c.grade_id=a.grade_id and d.sub_id=a.subject_id
+		order by create_time desc limit #pageSize# offset #offset#) qt
+		union
+		(select a.hui_no as huidano,1 as speechFlag,a.create_time,c.nick_name,d.grade_name,e.sub_name from answer a ,
+		question b,user c,grade d,subject e where a.question_id=b.q_id
+		and a.hui_no=c.hui_no and b.grade_id=d.grade_id and b.subject_id=e.sub_id
+		order by a.create_time desc limit #pageSize# offset #offset#) order by create_time desc limit #pageSize# offset #offset#
+	</select>
+	
+	<update id="updateQuestionAnswerNum" parameterClass="map">
+		update question set answer_num=ifnull(answer_num,0) + 1,has_answer=1 where q_id=#questionId#
+	</update>
+	
+	<update id="updateQuestionFavorate" parameterClass="map">
+		update question set has_favorate=1 where q_id=#questionId#
+	</update>
+	
+	<update id="modifyStatus" parameterClass="java.util.HashMap">
+		update question set status = #status# where q_id in
+		<iterate property="ids" open="(" close=")" conjunction=",">
+			#ids[]#
+		</iterate>
+	</update>
+	
+</sqlMap>

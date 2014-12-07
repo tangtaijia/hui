@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysbackup">
+	<typeAlias alias="sysbackup" type="com.hui.common.entity.SysBackUp" />
+
+	<resultMap class="com.hui.common.entity.SysBackUp" id="sysBackUpResult">
+		<result property="backupId" column="backup_id" />
+		<result property="seqId" column="seq_id" />
+		<result property="tabId" column="tab_id" />
+		<result property="tabName" column="tab_name" />
+		<result property="backupType" column="backup_type" />
+		<result property="backupForm" column="backup_form" />
+		<result property="startItems" column="start_items" />
+		<result property="endItems" column="end_items" />
+		<result property="filePath" column="file_path" />
+		<result property="fileItems" column="file_items" />
+		<result property="status" column="status" />
+		<result property="backupTime" column="backup_time" />
+		<result property="notes" column="notes" />
+	</resultMap>
+
+	<update id="update" parameterClass="sysbackup">
+		update sysbackup set backup_id=#backupId#
+		<isNotNull prepend="," property="status">
+			status = #status#
+		</isNotNull>
+		<isNotNull prepend="," property="notes">
+			notes = #notes#
+		</isNotNull>
+		<isNotNull prepend="," property="fileItems">
+			file_items = #fileItems#
+		</isNotNull>
+		<isNotNull prepend="," property="startItems">
+			start_items = #startItems#
+		</isNotNull>
+		<isNotNull prepend="," property="endItems">
+			end_items = #endItems#
+		</isNotNull>
+		where
+		backup_id=#backupId#
+	</update>
+
+	<insert id="save" parameterClass="sysbackup">
+		<selectKey resultClass="int" keyProperty="backupId">
+			select
+			ifnull(max(backup_id),0)
+			+ 1
+			as backupId
+			from sysbackup 
+    	</selectKey>
+		INSERT INTO sysbackup
+		(
+		backup_id,
+		seq_id,
+		tab_id,
+		backup_type,
+		backup_form,
+		start_items,
+		end_items,
+		file_path,
+		file_items,
+		status,
+		backup_time,
+		notes
+		)
+		VALUES
+		(
+		#backupId#,
+		#seqId#,
+		#tabId#,
+		#backupType#,
+		#backupForm#,
+		#startItems#,
+		#endItems#,
+		#filePath#,
+		#fileItems#,
+		#status#,
+		#backupTime#,
+		#notes#
+		)
+	</insert>
+
+	<select id="selectById" parameterClass="int" resultMap="sysBackUpResult">
+		SELECT
+		b.*,t.tab_name FROM sysbackup b,systab t where b.tab_id =
+		t.tab_id and
+		b.backup_id = #backupId#
+	</select>
+
+	<select id="selectAll" parameterClass="sysbackup" resultMap="sysBackUpResult">
+		SELECT b.*,t.tab_name FROM sysbackup b,systab t where b.tab_id =
+		t.tab_id
+		<dynamic prepend="and">
+			<isNotNull property="backupType">
+				b.backup_type = #backupType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="backupForm">
+				b.backup_form = #backupForm#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="status">
+				b.status = #status#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="seqId">
+				b.seq_id = #seqId#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="tabName">
+				t.tab_name like
+				CONCAT('%',
+				#tabName#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="backupTimeFrom">
+				b.backup_time >= #backupTimeFrom#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="backupTimeTo">
+				<![CDATA[b.backup_time <= #backupTimeTo#]]>
+			</isNotNull>
+		</dynamic>
+		order by backup_id desc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="sysbackup" resultClass="int">
+		SELECT count(t.tab_name) FROM sysbackup b,systab t where b.tab_id =
+		t.tab_id
+		<dynamic prepend="and">
+			<isNotNull property="backupType">
+				b.backup_type = #backupType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="backupForm">
+				b.backup_form = #backupForm#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="status">
+				b.status = #status#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="seqId">
+				b.seq_id = #seqId#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="tabName">
+				t.tab_name like
+				CONCAT('%',
+				#tabName#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="backupTimeFrom">
+				b.backup_time >= #backupTimeFrom#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="backupTimeTo">
+				<![CDATA[b.backup_time <= #backupTimeTo#]]>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="selectTab" parameterClass="sysbackup" resultClass="hashmap"
+		remapResults="true">
+		SELECT * FROM $tabName$
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getTabItems" parameterClass="sysbackup" resultClass="int"
+		remapResults="true">
+		SELECT count(*) FROM $tabName$
+	</select>
+
+	<select id="getMaxSeqId" resultClass="int">
+		select
+		max(seq_id) from
+		sysbackup
+	</select>
+
+	<select id="getIncreBackUpSeqId" resultClass="int">
+		SELECT distinct
+		seq_id FROM sysbackup where backup_form =
+		0 order by
+		seq_id desc limit
+		0,1
+	</select>
+
+</sqlMap>

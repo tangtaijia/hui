@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="syslog">
+	<typeAlias alias="syslog" type="com.hui.common.entity.SysLog" />
+
+	<resultMap class="com.hui.common.entity.SysLog" id="sysLogResult">
+		<result property="logId" column="log_id" />
+		<result property="remoteIp" column="remote_ip" />
+		<result property="operatorType" column="operator_type" />
+		<result property="operatorName" column="operator_name" />
+		<result property="operateType" column="operate_type" />
+		<result property="logLevel" column="log_level" />
+		<result property="logTime" column="log_time" />
+		<result property="className" column="class_name" />
+		<result property="methodName" column="method_name" />
+		<result property="logInfo" column="log_info" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysLogResult">
+		SELECT
+		*
+		FROM
+		syslog
+		WHERE
+		log_id = #id#
+	</select>
+
+	<select id="selectAll" parameterClass="syslog" resultMap="sysLogResult">
+		SELECT
+		*
+		FROM
+		syslog
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="operatorType">
+				operator_type = #operatorType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="operateType">
+				operate_type = #operateType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="logLevel">
+				log_level = #logLevel#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="operatorName">
+				operator_name like
+				CONCAT('%',
+				#operatorName#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="remoteIp">
+				remote_ip like
+				CONCAT('%',
+				#remoteIp#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="logTimeFrom">
+				log_time >= #logTimeFrom#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="logTimeTo">
+				<![CDATA[log_time <= #logTimeTo#]]>
+			</isNotNull>
+		</dynamic>
+		order by log_id desc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="syslog" resultClass="int">
+		select
+		count(*) from syslog
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="operatorType">
+				operator_type = #operatorType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="operateType">
+				operate_type = #operateType#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="logLevel">
+				log_level = #logLevel#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="operatorName">
+				operator_name like
+				CONCAT('%',
+				#operatorName#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="remoteIp">
+				remote_ip like
+				CONCAT('%',
+				#remoteIp#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="logTimeFrom">
+				log_time >= #logTimeFrom#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="logTimeTo">
+				<![CDATA[log_time <= #logTimeTo#]]>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<insert id="save" parameterClass="syslog">
+		<selectKey resultClass="int" keyProperty="logId">
+			select ifnull(max(log_id),0)
+			+ 1
+			as logId
+			from syslog 
+    	</selectKey>
+		INSERT INTO syslog
+		(
+		log_id,
+		remote_ip,
+		operator_type,
+		operator_name,
+		operate_type,
+		log_level,
+		log_time,
+		class_name,
+		method_name,
+		log_info
+		)
+		VALUES
+		(
+		#logId#,
+		#remoteIp#,
+		#operatorType#,
+		#operatorName#,
+		#operateType#,
+		#logLevel#,
+		#logTime#,
+		#className#,
+		#methodName#,
+		#logInfo#
+		)
+	</insert>
+
+	<delete id="deleteall">
+		delete from syslog
+	</delete>
+	
+	<delete id="delete" parameterClass="java.util.HashMap">
+		delete from syslog where log_id in
+		<iterate property="ids" open="(" close=")" conjunction=",">
+			#ids[]#
+		</iterate>
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user">
+	<typeAlias alias="user" type="com.hui.common.entity.User" />
+
+	<resultMap class="com.hui.common.entity.User" id="userResult">
+		<result property="userId" column="user_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="userPwd" column="password" />
+		<result property="nickName" column="nick_name" />
+		<result property="beanNum" column="bean_num"/>
+		<result property="sex" column="sex"/>
+		<result property="birthDate" column="birth_date"/>
+		<result property="mobile" column="mobile" />
+		<result property="answerNo" column="answer_no" />
+		<result property="acceptNo" column="accept_no" />
+		<result property="createTime" column="create_time" />
+		<result property="constellation" column="constellation" />
+		<result property="homeStr" column="home" />
+		<result property="residenceStr" column="residence" />
+		<result property="gradeId" column="grade_id" />
+		<result property="school" column="school" />
+		<result property="schoolRegionStr" column="school_region" />
+		<result property="isTeacher" column="is_teacher" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="userResult">
+		SELECT
+		*
+		FROM
+		user
+		WHERE
+		user_id = #id#
+	</select>
+
+	<select id="selectByKey" parameterClass="user" resultMap="userResult">
+		SELECT
+		*
+		FROM
+		user
+		WHERE 1=1
+		<dynamic prepend="and">
+			<isNotNull property="huiNo">
+				hui_no = #huiNo#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="nickName">
+				nick_name = #nickName#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="userPwd">
+				password = #userPwd#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="mobile">
+				mobile = #mobile#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="userId">
+				user_id != #userId#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="isTeacher">
+				is_teacher = #isTeacher#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="user">
+		<selectKey resultClass="int" keyProperty="userId">
+			select ifnull(max(user_id),0)
+			+ 1
+			as userId
+			from user 
+    	</selectKey>
+		INSERT INTO user
+		(
+		user_id,
+		hui_no,
+		password,
+		nick_name,
+		bean_num,
+		sex,
+		birth_date,
+		mobile,
+		answer_no,
+		accept_no,
+		create_time,
+		constellation,
+		home,
+		residence,
+		grade_id,
+		school,
+		school_region,
+		is_teacher,
+		status
+		)
+		VALUES
+		(
+		#userId#,
+		#huiNo#,
+		#userPwd#,
+		#nickName#,
+		#beanNum#,
+		#sex#,
+		#birthDate#,
+		#mobile#,
+		#answerNo#,
+		#acceptNo#,
+		#createTime#,
+		#constellation#,
+		#homeStr#,
+		#residenceStr#,
+		#gradeId#,
+		#school#,
+		#schoolRegionStr#,
+		#isTeacher#,
+		#status#
+		)
+	</insert>
+	
+	<update id="update" parameterClass="user">
+		update user set hui_no=#huiNo#,user_id=#userId#
+		<isNotEmpty prepend="," property="userPwd">
+			password = #userPwd#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="nickName">
+			nick_name = #nickName#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="beanNum">
+			bean_num = #beanNum#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="sex">
+			sex = #sex#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="birthDate">
+			birth_date = #birthDate#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="mobile">
+			mobile = #mobile#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="answerNo">
+			answer_no = #answerNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="acceptNo">
+			accept_no = #acceptNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="createTime">
+			create_time = #createTime#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="constellation">
+			constellation = #constellation#
+		</isNotEmpty>
+		<isNotNull prepend="," property="homeStr">
+			home = #homeStr#
+		</isNotNull>
+		<isNotNull prepend="," property="residenceStr">
+			residence = #residenceStr#
+		</isNotNull>
+		<isNotEmpty prepend="," property="gradeId">
+			grade_id = #gradeId#
+		</isNotEmpty>
+		<isNotNull prepend="," property="school">
+			school = #school#
+		</isNotNull>
+		<isNotNull prepend="," property="schoolRegionStr">
+			school_region = #schoolRegionStr#
+		</isNotNull>
+		<isNotEmpty prepend="," property="status">
+			status = #status#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="isTeacher">
+			is_teacher = #isTeacher#
+		</isNotEmpty>
+		where
+		user_id=#userId#
+	</update>
+
+	<select id="selectAll" parameterClass="user" resultMap="userResult">
+		SELECT
+		*
+		FROM
+		user
+		where status != 2
+		<dynamic prepend="and">
+			<isNotNull property="huiNo">
+				hui_no = #huiNo#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="nickName">
+				nick_name like
+				CONCAT('%', #nickName#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="status">
+				status = #status#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="isTeacher">
+				is_teacher = #isTeacher#
+			</isNotNull>
+		</dynamic>
+		order by user_id asc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="user" resultClass="int">
+		select
+		count(*) from user where status != 2
+		<dynamic prepend="and">
+			<isNotNull property="huiNo">
+				hui_no = #huiNo#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="nickName">
+				nick_name like
+				CONCAT('%', #nickName#,
+				'%')
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="status">
+				status = #status#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="isTeacher">
+				is_teacher = #isTeacher#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="mobile">
+				mobile = #mobile#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<update id="modifyStatus" parameterClass="java.util.HashMap">
+		update user set status = #status# where user_id in
+		<iterate property="ids" open="(" close=")" conjunction=",">
+			#ids[]#
+		</iterate>
+	</update>
+	
+	<select id="queryUserInfo" parameterClass="map" resultMap="userResult">
+		select * from user where 
+		(nick_name = #nickName#  or mobile = #nickName#) and status=0
+		and password = #password#
+	</select>
+	
+	<select id="queryUserExistsByNickName" parameterClass="map" resultClass="int">
+		select count(1) from user where nick_name = #nickName#
+	</select>
+	
+	<select id="queryUserByMobile" parameterClass="map" resultClass="int">
+		select count(1) from user where mobile=#mobile#
+	</select>
+	
+	<update id="resetUserPassword" parameterClass="map">
+		update user set password=#password# where mobile=#mobile#
+	</update>
+	
+	<update id="resetUserMobile" parameterClass="map">
+		update user set mobile=#mobile# where hui_no=#huiNo#
+	</update>
+	
+	<update id="resetUserNickName" parameterClass="map">
+		update user set nick_name=#nickName# where hui_no=#huiNo#
+	</update>
+	
+	<select id="searchUserByNickName" parameterClass="map" resultClass="user">
+		select hui_no as huino,nick_name as nickname,status from user where nick_name like CONCAT('%', #nickName#,'%')
+		and hui_no != #huidaNo#  and hui_no in (select to_no from fans where from_no = #huidaNo#) order by hui_no limit #pageSize# offset #offset#
+	</select>
+	
+	<select id="searchAllUserByNickName" parameterClass="map" resultClass="user">
+		select hui_no as huino,nick_name as nickname,status from user where nick_name like CONCAT('%', #nickName#,'%')
+		and hui_no != #huidaNo#  order by hui_no limit #pageSize# offset #offset#
+	</select>
+	
+	<select id="queryUserInfoByHuiNo" parameterClass="map" resultMap="userResult">
+		select * from user where hui_no=#huidaNo#
+	</select>
+	
+	<select id="getUserInfoEntity" parameterClass="map" resultMap="userResult">
+		select * from user where 1=1
+		<dynamic>
+			<isPropertyAvailable property="huidaNo">
+				<isNotNull property="huidaNo" prepend="and">
+					hui_no =#huidaNo#
+				</isNotNull>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="status">
+				<isNotNull property="status" prepend="and">
+					status =#status#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<!-- 查询被问题@的学霸 -->
+	<select id="getUserInfoByQId" parameterClass="int" resultMap="userResult">
+		SELECT
+			*
+		FROM
+			user u
+		JOIN questionuser qu ON u.hui_no = qu.hui_no
+		AND qu.question_id = #qId#
+		<!-- 安徽移动可以@老师相关的用户 -->
+		<!-- 
+		WHERE
+			NOT EXISTS (
+				SELECT
+					*
+				FROM
+					teacherinfo t
+				WHERE
+					u.hui_no = t.hui_no
+			)
+		 -->
+	</select>
+	<!-- 查询我的学霸好友 -->
+	<select id="getMyFriends" parameterClass="map" resultMap="userResult">
+		SELECT
+			u.*
+		FROM
+			user u
+		RIGHT JOIN fans f ON f.to_no = u.hui_no
+		WHERE
+			f.from_no=#huiNo#
+			<dynamic>
+				<isNotEmpty property="nickName" prepend="and">
+					nick_name like
+					CONCAT('%', #nickName#,
+					'%')
+				</isNotEmpty>
+				<isNotEmpty property="isTeacher" prepend="and">
+					is_teacher = #isTeacher#
+				</isNotEmpty>
+				<isPropertyAvailable property="start">
+					<isNotNull property="start">
+						limit #start#,#size#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	<!-- 我的学霸好友数量 -->
+	<select id="getMyFriendsCount" parameterClass="map" resultClass="int">
+		SELECT
+			count(u.hui_no)
+		FROM
+			user u
+		RIGHT JOIN fans f ON f.to_no = u.hui_no
+		WHERE
+			f.from_no=#huiNo#
+			<dynamic>
+				<isNotEmpty property="isTeacher" prepend="and">
+					is_teacher = #isTeacher#
+				</isNotEmpty>
+				<isNotEmpty property="nickName" prepend="and">
+					nick_name like
+					CONCAT('%', #nickName#,
+					'%')
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	<!-- 查询关注我的列表 -->
+	<select id="getMyFans" parameterClass="map" resultMap="userResult">
+		SELECT
+			u.*
+		FROM
+			user u
+		RIGHT JOIN fans f ON f.from_no = u.hui_no
+		WHERE
+			f.to_no=#huiNo#
+			<dynamic>
+				<isNotEmpty property="nickName" prepend="and">
+					nick_name like
+					CONCAT('%', #nickName#,
+					'%')
+				</isNotEmpty>
+				<isNotEmpty property="isTeacher" prepend="and">
+					is_teacher = #isTeacher#
+				</isNotEmpty>
+				<isPropertyAvailable property="start">
+					<isNotNull property="start">
+						limit #start#,#size#
+					</isNotNull>
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+	<!-- 关注我的列表数量 -->
+	<select id="getMyFansCount" parameterClass="map" resultClass="int">
+		SELECT
+			count(u.hui_no)
+		FROM
+			user u
+		RIGHT JOIN fans f ON f.from_no = u.hui_no
+		WHERE
+			f.to_no=#huiNo#
+			<dynamic>
+				<isNotEmpty property="isTeacher" prepend="and">
+					is_teacher = #isTeacher#
+				</isNotEmpty>
+				<isNotEmpty property="nickName" prepend="and">
+					nick_name like
+					CONCAT('%', #nickName#,
+					'%')
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<update id="modifyPassword" parameterClass="map">
+		update user set password = #newPassword# where password=#oldPassword# and hui_no=#huidaNo#
+	</update>
+	
+	<update id="setUserAcceptNo" parameterClass="map">
+		update user set accept_no=accept_no +1 where hui_no = #huidaNo#
+	</update>
+	
+	<update id="minusBean" parameterClass="map">
+		update user set bean_num=bean_num - #beanNum# where hui_no = #huiNo#
+	</update>
+	
+	<update id="plusBean" parameterClass="map">
+		update user set bean_num=bean_num + #beanNum# where hui_no = #huiNo#
+	</update>
+	
+	<update id="setUserAnswerNo" parameterClass="map">
+		update user set answer_no=ifnull(answer_no,0) +1 where hui_no = #huidaNo#
+	</update>
+</sqlMap>

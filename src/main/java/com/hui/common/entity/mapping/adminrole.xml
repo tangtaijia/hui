@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="adminrole">
+	<typeAlias alias="adminrole" type="com.hui.common.entity.AdminRole" />
+
+	<resultMap class="com.hui.common.entity.AdminRole" id="adminRoleResult">
+		<result property="arId" column="ar_id" />
+		<result property="adminId" column="admin_id" />
+		<result property="roleId" column="role_id" />
+		<result property="adminName" column="admin_name" />
+		<result property="roleName" column="role_name" />
+	</resultMap>
+
+	<select id="selectAdminRole" parameterClass="adminrole"
+		resultMap="adminRoleResult">
+		SELECT ar_id,ar.admin_id,ar.role_id,admin_name,role_name
+		FROM adminrole
+		ar,admin a,sysrole r
+		where ar.admin_id = a.admin_id and ar.role_id =
+		r.role_id and a.status != 2
+		<dynamic prepend="and">
+			<isNotNull property="adminId">
+				ar.admin_id =
+				#adminId#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotNull property="roleId">
+				ar.role_id =
+				#roleId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<insert id="save" parameterClass="adminrole">
+		<selectKey resultClass="int" keyProperty="arId">
+			select ifnull(max(ar_id),0)
+			+
+			1
+			as arId
+			from adminrole 
+    	</selectKey>
+		INSERT INTO adminrole
+		(
+		ar_id,
+		admin_id,
+		role_id
+		)
+		VALUES
+		(
+		#arId#,
+		#adminId#,
+		#roleId#
+		)
+	</insert>
+
+	<delete id="deleteAdminRole" parameterClass="java.util.HashMap">
+		delete from adminrole where admin_id in
+		<iterate property="adminIds" open="(" close=")" conjunction=",">
+			#adminIds[]#
+		</iterate>
+	</delete>
+
+	<delete id="deleteRoleAdmin" parameterClass="java.util.HashMap">
+		delete from adminrole where role_id in
+		<iterate property="roleIds" open="(" close=")" conjunction=",">
+			#roleIds[]#
+		</iterate>
+	</delete>
+
+</sqlMap>

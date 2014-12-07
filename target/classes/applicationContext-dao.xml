@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<bean id="huiSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocations">
+			<list>
+				<value>classpath:/resources/sqlMapConfig.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="baseDao" abstract="true">
+		<property name="sqlMapClient">
+			<ref local="huiSqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="userDao" class="com.hui.common.dao.impl.UserDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>user</value>
+		</property>
+	</bean>
+
+	<bean id="adminDao" class="com.hui.common.dao.impl.AdminDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>admin</value>
+		</property>
+	</bean>
+
+	<bean id="sysConfigDao" class="com.hui.common.dao.impl.SysConfigDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>syscfg</value>
+		</property>
+	</bean>
+
+	<bean id="sysDataDao" class="com.hui.common.dao.impl.SysDataDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysdata</value>
+		</property>
+	</bean>
+
+	<bean id="sysMenuDao" class="com.hui.common.dao.impl.SysMenuDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysmenu</value>
+		</property>
+	</bean>
+
+	<bean id="sysRoleDao" class="com.hui.common.dao.impl.SysRoleDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysrole</value>
+		</property>
+	</bean>
+
+	<bean id="sysAuthDao" class="com.hui.common.dao.impl.SysAuthDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysauth</value>
+		</property>
+	</bean>
+
+	<bean id="sysCacheDao" class="com.hui.common.dao.impl.SysCacheDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>syscache</value>
+		</property>
+	</bean>
+
+	<bean id="sysFileDao" class="com.hui.common.dao.impl.SysFileDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysfile</value>
+		</property>
+	</bean>
+
+	<bean id="sysArticleDao" class="com.hui.common.dao.impl.SysArticleDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysarticle</value>
+		</property>
+	</bean>
+
+	<bean id="sysLogDao" class="com.hui.common.dao.impl.SysLogDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>syslog</value>
+		</property>
+	</bean>
+
+	<bean id="sysTabDao" class="com.hui.common.dao.impl.SysTabDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>systab</value>
+		</property>
+	</bean>
+
+	<bean id="sysBackUpDao" class="com.hui.common.dao.impl.SysBackUpDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysbackup</value>
+		</property>
+	</bean>
+
+	<bean id="userRoleDao" class="com.hui.common.dao.impl.UserRoleDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>userrole</value>
+		</property>
+	</bean>
+
+	<bean id="adminRoleDao" class="com.hui.common.dao.impl.AdminRoleDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>adminrole</value>
+		</property>
+	</bean>
+	
+	<bean id="userFollowDao" class="com.hui.common.dao.impl.UserFollowDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>fans</value>
+		</property>
+	</bean>
+	 
+	<bean id="answerDao" class="com.hui.common.dao.impl.AnswerDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>answer</value>
+		</property>
+	</bean>
+	
+	<bean id="rechargeDao"  class="com.hui.common.dao.impl.RechargeDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>rechargepackage</value>
+		</property>	
+	</bean>
+	
+	<bean id="messageDao" class="com.hui.common.dao.impl.MessageDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>msg</value>
+		</property>	
+	</bean>
+	
+	<bean id="questionDao" class="com.hui.common.dao.impl.QuestionDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>question</value>
+		</property>	
+	</bean>
+	
+	<bean id="sysMsgDao" class="com.hui.common.dao.impl.SysMsgDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>sysmsg</value>
+		</property>	
+	</bean>
+	
+	<bean id="subjectDao" class="com.hui.common.dao.impl.SubjectDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>subject</value>
+		</property>	
+	</bean>
+	
+	<bean id="gradeDao" class="com.hui.common.dao.impl.GradeDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>grade</value>
+		</property>	
+	</bean>
+	
+	<bean id="invKeywordsDao" class="com.hui.common.dao.impl.InvKeywordsDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>invkeywords</value>
+		</property>	
+	</bean>
+	
+	<bean id="praiseDao" class="com.hui.common.dao.impl.PraiseDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>praise</value>
+		</property>	
+	</bean>
+	
+	<bean id="helpDao" class="com.hui.common.dao.impl.HelpDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>help</value>
+		</property>	
+	</bean>
+	
+	<bean id="teacherInfoDao" class="com.hui.common.dao.impl.TeacherInfoDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>teacherinfo</value>
+		</property>	
+	</bean>
+	
+	<bean id="bugDao" class="com.hui.common.dao.impl.BugDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>bug</value>
+		</property>	
+	</bean>
+	
+	<bean id="provinceDao" class="com.hui.common.dao.impl.ProvinceDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>province</value>
+		</property>	
+	</bean>
+	
+	<bean id="cityDao" class="com.hui.common.dao.impl.CityDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>city</value>
+		</property>	
+	</bean>
+	
+	<bean id="countyDao" class="com.hui.common.dao.impl.CountyDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>county</value>
+		</property>	
+	</bean>
+	
+	<bean id="gradeSubjectDao" class="com.hui.common.dao.impl.GradeSubjectDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>gradesubject</value>
+		</property>	
+	</bean>
+	
+	<bean id="questionUserDao" class="com.hui.common.dao.impl.QuestionUserDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>questionuser</value>
+		</property>	
+	</bean>
+	
+	<bean id="beanFlowDao" class="com.hui.common.dao.impl.BeanFlowDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>beanflow</value>
+		</property>	
+	</bean>
+	
+	<bean id="cashFlowDao" class="com.hui.common.dao.impl.CashFlowDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>cashflow</value>
+		</property>	
+	</bean>
+	
+	<bean id="onlineDurationDao" class="com.hui.common.dao.impl.OnlineDurationDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>onlineduration</value>
+		</property>	
+	</bean>
+	
+	<bean id="collectionDao" class="com.hui.common.dao.impl.CollectionDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>collectionE</value>
+		</property>	
+	</bean>
+	
+	<bean id="commonLoginDao" class="com.hui.common.dao.impl.CommonLoginDaoImpl"
+		parent="baseDao">
+		<property name="namespace">
+			<value>commonlogin</value>
+		</property>	
+	</bean>
+	
+</beans>

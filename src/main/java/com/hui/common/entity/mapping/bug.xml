@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="bug">
+	<typeAlias alias="bug" type="com.hui.common.entity.Bug" />
+
+	<resultMap class="com.hui.common.entity.Bug" id="bugResult">
+		<result property="bugId" column="bug_id" />
+		<result property="huiNo" column="hui_no" />
+		<result property="userName" column="user_name" />
+		<result property="qq" column="qq" />
+		<result property="phone" column="phone" />
+		<result property="createTime" column="create_time" />
+		<result property="clientStyle" column="client_style" />
+		<result property="bugDesc" column="bug_desc" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="bugResult">
+		SELECT
+		*
+		FROM
+		bug
+		WHERE
+		bug_id = #bugId#
+	</select>
+	
+	<select id="selectAll" parameterClass="map" resultMap="bugResult">
+		SELECT
+		*
+		FROM
+		bug
+		WHERE 1=1 AND status=1
+		order by bug_id desc
+		<dynamic>
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<select id="getCount" parameterClass="map" resultClass="int">
+		select
+			count(1) 
+		FROM
+			bug
+		WHERE 1=1 AND status=1
+	</select>
+	
+	<select id="selectAllE" parameterClass="bug" resultMap="bugResult">
+		SELECT
+		*
+		FROM
+		bug
+		WHERE 1=1 AND status=1
+		<dynamic>
+			<isPropertyAvailable property="createTimeFrom">
+				<isNotEmpty property="createTimeFrom" prepend="and">
+					create_time &gt;= #createTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="createTimeTo">
+				<isNotEmpty property="createTimeTo" prepend="and">
+					create_time &lt;= #createTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			order by bug_id desc
+			<isPropertyAvailable property="start">
+				<isNotNull property="start">
+					limit #start#,#size#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="getCountE" parameterClass="bug" resultClass="int">
+		select
+			count(1) 
+		FROM
+			bug
+		WHERE 1=1 AND status=1
+		<dynamic>
+			<isPropertyAvailable property="createTimeFrom">
+				<isNotEmpty property="createTimeFrom" prepend="and">
+					create_time &gt;= #createTimeFrom#
+				</isNotEmpty>
+			</isPropertyAvailable>
+			<isPropertyAvailable property="createTimeTo">
+				<isNotEmpty property="createTimeTo" prepend="and">
+					create_time &lt;= #createTimeTo#
+				</isNotEmpty>
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	
+	<insert id="save" parameterClass="bug">
+		<selectKey resultClass="int" keyProperty="bugId">
+			select
+			ifnull(max(bug_id),0)
+			+ 1
+			as bugId
+			from bug 
+    	</selectKey>
+		INSERT INTO bug
+		(
+		bug_id,
+		hui_no,
+		user_name,
+		qq,
+		phone,
+		create_time,
+		client_style,
+		bug_desc,
+		status
+		)
+		VALUES
+		(
+		#bugId#,
+		#huiNo#,
+		#userName#,
+		#qq#,
+		#phone#,
+		UNIX_TIMESTAMP(),
+		#clientStyle#,
+		#bugDesc#,
+		#status#
+		)
+	</insert>
+
+</sqlMap>

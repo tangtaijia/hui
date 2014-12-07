@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysrole">
+	<typeAlias alias="sysrole" type="com.hui.common.entity.SysRole" />
+
+	<resultMap class="com.hui.common.entity.SysRole" id="sysRoleResult">
+		<result property="roleId" column="role_id" />
+		<result property="roleCode" column="role_code" />
+		<result property="roleName" column="role_name" />
+		<result property="roleType" column="role_type" />
+		<result property="notes" column="notes" />
+	</resultMap>
+
+	<select id="selectById" parameterClass="int" resultMap="sysRoleResult">
+		SELECT
+		*
+		FROM
+		sysrole
+		WHERE
+		role_id = #id#
+	</select>
+
+	<select id="selectByKey" parameterClass="sysrole" resultMap="sysRoleResult">
+		SELECT
+		*
+		FROM
+		sysrole
+		WHERE
+		role_code = #roleCode#
+		<dynamic prepend="and">
+			<isNotNull property="roleId">
+				role_id != #roleId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="selectAll" parameterClass="sysrole" resultMap="sysRoleResult">
+		SELECT
+		*
+		FROM
+		sysrole
+		where role_type = #roleType#
+		order by role_id asc
+		<isPropertyAvailable property="start">
+			<isNotNull property="start">
+				limit #start#,#size#
+			</isNotNull>
+		</isPropertyAvailable>
+	</select>
+
+	<select id="getCount" parameterClass="sysrole" resultClass="int">
+		select
+		count(*) from sysrole where role_type = #roleType#
+	</select>
+
+	<insert id="save" parameterClass="sysrole">
+		<selectKey resultClass="int" keyProperty="roleId">
+			select ifnull(max(role_id),0)
+			+ 1
+			as roleId
+			from sysrole 
+    	</selectKey>
+		INSERT INTO sysrole
+		(
+		role_id,
+		role_code,
+		role_name,
+		role_type,
+		notes
+		)
+		VALUES
+		(
+		#roleId#,
+		#roleCode#,
+		#roleName#,
+		#roleType#,
+		#notes#
+		)
+	</insert>
+
+	<update id="update" parameterClass="sysrole">
+		update sysrole set role_id=#roleId#
+		<isNotNull prepend="," property="roleCode">
+			role_code = #roleCode#
+		</isNotNull>
+		<isNotNull prepend="," property="roleName">
+			role_name = #roleName#
+		</isNotNull>
+		<isNotNull prepend="," property="notes">
+			notes = #notes#
+		</isNotNull>
+		where
+		role_id=#roleId#
+	</update>
+
+	<delete id="delete" parameterClass="java.util.HashMap">
+		delete from sysrole where role_id in
+		<iterate property="ids" open="(" close=")" conjunction=",">
+			#ids[]#
+		</iterate>
+	</delete>
+
+</sqlMap>
